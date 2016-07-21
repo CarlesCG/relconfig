@@ -14,25 +14,10 @@ library(shiny)
 sidebar <- function(){
   dashboardSidebar(
     sidebarMenu(id="menu1",
-                menuItem("Intro", tabName = "intro", icon = icon("info"), selected = T), 
-                menuItem("Generator", tabName = "generator", icon = icon("dashboard"), selected = F )
-    ), 
-    ## 1. Generator  ----
-    conditionalPanel(
-      condition = "input.menu1 == 'generator'",
-      sliderInput("npoints",
-                  "Total sample", min = 5, max = 100 , value = 50, step=1), 
-      sliderInput("nFailures",
-                  "Number of failures", min = 1, max = 100, value = 21, step=1), 
-      sliderInput("shape",
-                  "Shape", min = 0.1, max = 7, value = 3,  step = 0.1), 
-      sliderInput("scale",
-                  "Scale", min = 10, max = 500, value = 100, step = 50), 
-      sliderInput("conflevel_generator", animate = TRUE,
-                  "Level confidence Interval", min = 0.5,  max = 0.99, step= 0.05, value = 0.8)
+                menuItem("Intro", tabName = "intro", icon = icon("info"), selected = F), 
+                menuItem("Generator", tabName = "generator", icon = icon("dashboard"), selected = T )
     )
     )
-   
 }
 ### Body content --------------------------
 body <- function() {
@@ -43,18 +28,30 @@ body <- function() {
               includeMarkdown("./text/intro_text.md")
       ),
       tabItem(tabName = "generator",
-              fluidRow(
-                box(title = "Weibull plot generator", height = 750,  
-                    status="info", solidHeader = T, collapsible=F,  
-                    plotOutput("logplot") ),
-                #               box(title = "Density plot",  status = "info",solidHeader = TRUE,  collapsible=TRUE,
-                #                   ggvisOutput("ggDensity"), uiOutput("ggDensity_ui"))
-                tabBox(
-                  title =  tagList(shiny::icon("line-chart"), "Other plots"),
-                  # The id lets us use input$tabset1 on the server to find the current tab
-                  id = "tabset1", height = 650 #,
-                  #  tabPanel("Density", ggvisOutput("ggDensity"), uiOutput("ggDensity_ui") ),
-                  #  tabPanel("Histogram", ggvisOutput("ggHistogram"), uiOutput("ggHistogram_ui"))
+              sidebarLayout(
+                sidebarPanel(
+                  width = 2, tabName="Variables", 
+                  sliderInput("npoints",
+                              "Total sample", min = 5, max = 100 , value = 50, step=1), 
+                  sliderInput("nFailures",
+                              "Number of failures", min = 1, max = 100, value = 21, step=1), 
+                  sliderInput("shape",
+                              "Shape", min = 0.1, max = 7, value = 3,  step = 0.1), 
+                  sliderInput("scale",
+                              "Scale", min = 10, max = 500, value = 100, step = 50), 
+                  br(),
+                  # Confident Intervals option
+                  checkboxInput(inputId = "confinter", label = "Plot confident intervals?", value = F),
+                  uiOutput("conditional_confinter"),
+                  
+                  # Download button
+                  downloadButton('download_weibullGenerator', 'Download Plot')
+                ), 
+                mainPanel(      
+                  box(title = "Weibull plot generator",  height = 750,  
+                      status="info", solidHeader = T, collapsible=F,  
+                      plotOutput("logplot") )
+                  
                 )
               )
       )
@@ -99,27 +96,48 @@ server <- function(input, output, session){
     data.frame(time=df$time, event=df$event)
     
   })
+  output$conditional_confinter <- renderUI({
+    if(input$confinter == T){
+      sliderInput("conflevel_generator", animate = TRUE,
+                  "Level confidence Interval", min = 0.5,  max = 0.99, step= 0.05, value = 0.8) 
+    }
+  })
   output$logplot <- renderPlot({
     # Aesthetics
     title <- ""
-    subtitle <- paste0("Likelihood Ratio confidence level ", 
-                       input$conflevel_generator*100," %", "(the red line)")
-    
+    subtitle <- ""
     # Data greneration 
     df <- data.generator()
     
     # Fit abrem 
     dfa <- Abrem(df, col="black", pch=2)
     dfa <- abrem.fit(dfa, col="blue")
-    dfa <- abrem.conf(dfa, method.conf.blives="lrb", cl=input$conflevel_generator, 
-                      unrel.n=25, 
-                      lty=1, lwd=3, col="red")
+    
+    # Adding confident intervals
+    if(input$confinter == T){
+      subtitle <- paste0("Likelihood Ratio confidence level ", 
+                         input$conflevel_generator*100," %", "(the red line)")
+    
+      dfa <- abrem.conf(dfa, method.conf.blives="lrb", cl=input$conflevel_generator, 
+                        unrel.n=25, 
+                        lty=1, lwd=3, col="red")
+    }
+  
     
     # Plot
-    plot(dfa, main=title, sub=subtitle,is.plot.legend=T,
+    plot(dfa, main=title, sub=subtitle, is.plot.legend=T,
          xlab="Time to Failure", 
          ylab="Occurrence CDF %")
   } , height = 650) 
+  output$download_weibullGenerator <- downloadHandler(
+    filename = "Plot_Weibull_generated.pdf",
+    content = function(file) {
+      observe(data.toWeibull()
+      dev.off()
+    }
+  )
+  
+  
 
 }
 
