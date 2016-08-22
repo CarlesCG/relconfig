@@ -1,35 +1,33 @@
 generator_UI <- function(id){
   ns <- NS(id)
   tagList(
-    
     sidebarLayout(
+      mainPanel(
+        box(title = "Weibull plot generator", width = 12,# height = 820, 
+            status="info", solidHeader = T, collapsible=T,  
+            plotOutput( ns("logplot") ) 
+        ) 
+        
+      ), 
       sidebarPanel(
-        width = 2, tabName="Variables", 
+        # width = 2, 
+        tabName="Variables", 
         sliderInput( ns("npoints"),
-                    "Total sample", min = 5, max = 100 , value = 50, step=1), 
+                     "Total sample", min = 5, max = 100 , value = 50, step=1), 
         sliderInput( ns("nFailures"),
-                    "Number of failures", min = 1, max = 100, value = 21, step=1), 
+                     "Number of failures", min = 1, max = 100, value = 21, step=1), 
         sliderInput( ns("shape"),
-                    "Shape", min = 0.1, max = 7, value = 3,  step = 0.1), 
+                     "Shape", min = 0.1, max = 7, value = 3,  step = 0.1), 
         sliderInput( ns("scale"),
-                    "Scale", min = 10, max = 500, value = 100, step = 50), 
+                     "Scale", min = 10, max = 500, value = 100, step = 50), 
         br(),
         # Confident Intervals option
-        checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals?", value = F)
-        ,
+        checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals?", value = F),
         uiOutput( ns( "conditional_confinter"))
-        #,
+        #
         # Download button
         # downloadButton( ns('download_weibullGenerator'), 'Download Plot')
-      ), 
-      mainPanel(      
-        box(title = "Weibull plot generator",  #height = 750,  
-            status="info", solidHeader = T, collapsible=F,  
-            plotOutput( ns("logplot") ) 
-            )
-        
-      )
-    )
+      ), fluid = T, position = "left" )
     
     
   )
@@ -40,11 +38,12 @@ generator_UI <- function(id){
 
 generator_Server <- function(input, output, session){
   # 0. Censored and Uncensored
-  # Number of failures update slider Input with correction
-   observe({
+  # Number of failures < Num. points xa Update slider Input with correction
+  observe({
      if(input$nFailures > input$npoints){
        updateSliderInput(session, "nFailures", value = input$npoints)
      }
+   })
 
   output$conditional_confinter <- renderUI({
     ns <- session$ns
@@ -93,7 +92,7 @@ generator_Server <- function(input, output, session){
       plot(dfa, main=title, sub=subtitle, is.plot.legend=T,
            xlab="Time to Failure", 
            ylab="Occurrence CDF %")
-    } , height = 650) 
+    } ) 
     
     # output$download_weibullGenerator <- downloadHandler(
     #   filename = "Plot_Weibull_generated.pdf",
@@ -102,6 +101,5 @@ generator_Server <- function(input, output, session){
     #     dev.off()
     #   }
     # )
-   })
 
 }
