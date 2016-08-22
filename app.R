@@ -19,7 +19,7 @@ sidebar <- function(){
   dashboardSidebar(
     sidebarMenu(id="menu1",
                 menuItem("Intro", tabName = "intro", icon = icon("info"), selected = F), 
-                menuItem("Generator", tabName = "generator", icon = icon("dashboard"), selected = T )
+                menuItem("Weibull Generator", tabName = "generator", icon = icon("dashboard"), selected = T )
     )
     )
 }
