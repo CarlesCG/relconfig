@@ -3,9 +3,11 @@ generator_UI <- function(id){
   tagList(
     sidebarLayout(
       mainPanel(
+       
         box(title = "Weibull plot generator", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("logplot") ) ), 
+        valueBoxOutput(ns( "facts" ), width = 12), 
         box(title = "Technicall info", 
             status="info", solidHeader = T, collapsible=T,  
             dataTableOutput(ns("legendPlot")  ) )
@@ -31,10 +33,7 @@ generator_UI <- function(id){
         # downloadButton( ns('download_weibullGenerator'), 'Download Plot')
       ), fluid = T, position = "left" )
     
-    
   )
-  
-  
 }
 
 
@@ -57,7 +56,6 @@ generator_Server <- function(input, output, session){
   
   
   ## 1. Plots --------------------------------------------
-  ## 1.1 Weibull Plot
   # How the data will be generated
   data.generator <- reactive({ 
     set.seed(1234)
@@ -68,6 +66,7 @@ generator_Server <- function(input, output, session){
     data.frame(time=df$time, event=df$event)
     
   })
+  
   weibull.generator <- reactive({
     # Data greneration 
     df <- data.generator()
@@ -103,13 +102,21 @@ generator_Server <- function(input, output, session){
          xlab="Time to Failure", 
          ylab="Occurrence CDF %")
   })
+  
   output$legendPlot <- renderDataTable({
     source("R/foo_abremLegend.R")
     WeibullLegend(weibull.generator())
-  }, options= list(
-    paging = F, 
-    searching = FALSE
-  ))
+    
+  }, options= list(paging = F, searching = FALSE) )
+  
+  output$facts <- renderValueBox({
+    
+    valueBox(
+      paste0("$", weibull.generator()$n), paste(weibull.generator()$n, " Testing  "), 
+      icon = icon("dollar"), color = "green" )
+  })
+  
+  
   
   # output$download_weibullGenerator <- downloadHandler(
   #   filename = "Plot_Weibull_generated.pdf",
