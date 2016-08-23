@@ -5,6 +5,9 @@ weibullCalculate_UI <- function(id){
       mainPanel(
         box(title = "Weibull plot generator", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
+            textOutput( ns("test2") ) ), 
+        box(title = "Weibull plot generator", width = 12,# height = 820, 
+            status="info", solidHeader = T, collapsible=T,  
             textOutput( ns("test") ) )
       ), 
       sidebarPanel(
@@ -27,6 +30,9 @@ weibullCalculate_UI <- function(id){
 
 weibullCalculate_server <- function(input, output, session){
   
-  output$test <- renderText( paste0("This is a test!") )
+  output$test2 <- renderText( paste0("This is a test!") )
   
+  # df <- callModule(uploadData_server, "page_uploadData2")
+  # output$table <- renderDataTable({ df() })
+  # 
 }

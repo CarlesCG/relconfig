@@ -44,10 +44,9 @@ body <- function(){
       ## Intro tab content ----
       tabItem(tabName = "intro",          includeMarkdown("./text/intro_text.md") ),
       tabItem(tabName = "generator",      generator_UI("page_generator") ), 
-    # tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ), 
-      tabItem(tabName = "uploadData",     uploadData_UI("page_uploadData") )
+      tabItem(tabName = "uploadData",     uploadData_UI("page_uploadData") ), 
+      tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ) )
     )
-  )
 }
 
 ## Bind ui together ----
@@ -71,9 +70,8 @@ server <- function(input, output, session){
   source("./R/module_WeibullCalculate.R")
   
   callModule(generator_Server,        "page_generator")
+  callModule(uploadData_server,       "page_uploadData")
   callModule(weibullCalculate_server, "page_calculate")
-  callModule(uploadData_server,           "page_uploadData")
-
 }
 
 ### Bind the app together ----
