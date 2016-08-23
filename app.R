@@ -9,10 +9,8 @@ library(shiny)
 # library(ggvis) # Whenever doing ggvis, not yet...
 
 # Source modules
-source("./R/module_generator.R")
-source("./R/module_UploadData.R")
-source("./R/module_WeibullCalculate.R")
-
+# The code in ui.R is run once, when the Shiny app is started and it generates an HTML 
+# file which is cached and sent to each web browser that connects.
 
 ### UI PART ----
 
