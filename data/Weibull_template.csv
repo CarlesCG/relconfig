@@ -1,0 +1,17 @@
+row_id,part_id,time,event,failure_mode
+1,A10,412,1,Mode A
+2,A09,551,1,Mode A
+3,A08,858,1,Mode A
+4,A08,600,1,Mode A
+5,A08,700,1,Mode A
+6,A08,100,1,Mode A
+7,A01,913,0,None
+8,A02,913,0,None
+9,A03,913,0,None
+10,A04,913,0,None
+11,A05,913,0,None
+12,A06,913,0,None
+13,A07,913,0,None
+14,A08,55,0,None
+15,A09,362,0,None
+16,A10,501,0,None
