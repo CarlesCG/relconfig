@@ -10,6 +10,8 @@ library(shiny)
 
 # Source modules
 source("./R/module_generator.R")
+source("./R/module_UploadData.R")
+source("./R/module_WeibullCalculate.R")
 
 
 ### UI PART ----
@@ -19,7 +21,16 @@ sidebar <- function(){
   dashboardSidebar(
     sidebarMenu(id="menu1",
                 menuItem("Intro", tabName = "intro", icon = icon("info"), selected = F), 
-                menuItem("Weibull Generator", tabName = "generator", icon = icon("dashboard"), selected = T )
+                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"), selected = F ), 
+                menuItem("Weibull Modeler", tabName = "modeler", icon = icon("bar-chart"), selected = F, 
+                          menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData"),
+                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel", selected = T)), 
+                menuItem("Forecast Modeler", icon = icon("line-chart"),
+                         menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
+                         menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")), 
+                menuItem("Help", tabName = "help", icon = icon("question-circle"),
+                         menuSubItem("About shinyHome", icon = icon("user"),tabName = "helpAbout"),
+                         menuSubItem("Welcome", icon = icon("coffee"),tabName = "helpWelcome") )
     )
     )
 }
@@ -28,12 +39,9 @@ body <- function(){
   dashboardBody(
     tabItems(
       ## Intro tab content ----
-      tabItem(tabName = "intro",
-              includeMarkdown("./text/intro_text.md")
-      ),
-      tabItem(tabName = "generator",
-              generator_UI("page_generator")
-      )
+      tabItem(tabName = "intro",          includeMarkdown("./text/intro_text.md") ),
+      tabItem(tabName = "generator",      generator_UI("page_generator") ), 
+      tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") )
     )
   )
 }
@@ -55,7 +63,11 @@ library(dplyr)
 ## Server foo
 server <- function(input, output, session){
   source("./R/module_generator.R")
-  callModule(generator_Server, "page_generator")
+  source("./R/module_UploadData.R")
+  source("./R/module_WeibullCalculate.R")
+  
+  callModule(generator_Server,        "page_generator")
+  callModule(weibullCalculate_server, "page_calculate")
 
 }
 
