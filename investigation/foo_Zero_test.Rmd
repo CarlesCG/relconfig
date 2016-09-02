@@ -1,0 +1,116 @@
+---
+title: "Section 6.9 Zero Failure Test"
+subtitle: "WeiBayes"
+author: "Carles C.G."
+date: "September 2, 2016"
+output: html_document
+---
+
+### Substaining and reliability testing
+Three tupes of Weibayes :  
+
+- Zero failure test  
+- Zero or one failure test
+- Sudden Death
+
+
+## Zero failure test
+Given number of components in testing, failure mode (eta and beta) and the confidence of the result. 
+**Basic formulas**
+```{r}
+ k_At_Nconf <- function(n, beta, conf){
+    (-(1/n) * log(1-conf) ) ^ (1/beta) 
+  }
+
+# n Number of components at the test
+# Beta of the failure mode
+# conf Level of confidence fot the results
+# dem_eta Characteristic life to demonstrate
+time_Pass_Zero_failure  <- function(n, beta, dem_eta, conf){
+  # k_At_Nconf Characteristic Life Multiplier at a confidence level
+  k_At_Nconf <- function(n, beta, conf){
+    (-(1/n) * log(1-conf) ) ^ (1/beta) 
+  }
+  
+  time <- ( k_At_Nconf(n, beta, conf) * dem_eta ) %>% round(., 2)
+  return( time ) 
+}
+
+time_Pass_Zero_failure(n=3, beta = 2, dem_eta = 500, conf=.9)
+```
+
+
+```{r libraries}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+theme_set(theme_bw())
+```
+
+```{r}
+df <-expand.grid(
+  n= c(1:10, 12, 14, 16, 18, 20, 25, 30, 40, 50),
+  beta = c(seq(.5, 5, by=.5)), 
+  conf=  c( 0.5, 0.6, 0.7, 0.8, 0.9, .92, .95, .97, .99))
+
+df$k <- k_At_Nconf(n = df$n, beta = df$beta, df$conf )
+df$dem_time <- time_Pass_Zero_failure(n = df$n, beta = df$beta, dem_eta = 500, df$conf) 
+
+```
+To reproduce the same table as the 6-11 change from long to wide in the 90% confidence level
+```{r}
+df %>% filter(conf %in% .9) %>% 
+  spread(key = beta, value = k)
+
+
+```
+
+
+
+*How k (Characteristic life multiplier)  changes with beta and confidence, given a fix number (n) of components to test*
+
+```{r}
+data <-df %>% 
+  mutate( facet = as.factor(n)) 
+nComponents <- 2
+
+p <- ggplot(data %>% filter(n %in% nComponents), 
+            aes(x=beta, y=k, 
+                group=conf, colour=conf %>% as.factor)) + 
+  geom_line(size=1) +
+  ggtitle(paste0("Total of ",nComponents, " testing components"))
+
+ggplotly(p)
+# + facet
+
+```
+
+**Seee how the characteristic life depends heavily on the number of components to test**
+```{r}
+q <- ggplot(data, 
+            aes(x=beta, y=k, 
+                group=conf, colour=conf %>% as.factor)) + 
+  geom_line(size=1)  + facet_wrap(~ facet )
+q
+# ggplotly(q)
+```
+
+
+**Now change your mind to fix the confidence, and see the effect of the number of components at the chatacteristic life**
+```{r}
+nconf <- .9
+r <- ggplot(data %>% filter(conf %in% nconf), 
+            aes(x=beta, y=k, 
+                group=n , colour=n)) + 
+  geom_line(size=1) +
+  ggtitle(paste0("Confidence of ",nconf, " in the test"))
+
+ggplotly(r)
+
+
+```
+
+
+
+## Required sample size 
