@@ -65,6 +65,7 @@ library(dplyr)
 
 ## Server foo
 server <- function(input, output, session){
+  # This is not necessary here! 
   source("./R/module_generator.R")
   source("./R/module_UploadData.R")
   source("./R/module_WeibullCalculate.R")
