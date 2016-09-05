@@ -45,6 +45,7 @@ library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(viridis)
 theme_set(theme_bw())
 ```
 
@@ -85,6 +86,34 @@ ggplotly(p)
 # + facet
 
 ```
+
+
+What about a Heat map? 
+```{r}
+t <- df %>% as.tbl %>% 
+  filter(conf %in% 0.9) %>% 
+  select(beta, k, n ) %>% 
+  spread(key = beta, value = k)
+  
+head(t)
+
+m <- as.matrix(t)
+plot_ly(z = t, type = "heatmap")
+    # ,
+colo    
+
+
+x <- list(
+    title = "x Axis"
+)
+y <- list(
+    title = "LoL Axis"
+)
+plot_ly(z = volcano, colorscale = "Hot", type = "heatmap") %>% layout(title = "Hello", xaxis = x, yaxis = y) 
+
+
+```
+
 
 **Seee how the characteristic life depends heavily on the number of components to test**
 ```{r}
