@@ -1,4 +1,7 @@
+library(abrem)
+
 generator_UI <- function(id){
+  
   ns <- NS(id)
   tagList(
     sidebarLayout(
@@ -38,6 +41,7 @@ generator_UI <- function(id){
 
 
 generator_Server <- function(input, output, session){
+  
   # 0. Censored and Uncensored
   # Number of failures < Num. points xa Update slider Input with correction
   observe({
