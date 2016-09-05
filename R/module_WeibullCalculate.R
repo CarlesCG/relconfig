@@ -11,15 +11,17 @@ weibullCalculate_UI <- function(id){
             textOutput( ns("test") ) )
       ), 
       sidebarPanel(
-        sliderInput( inputId = "confcalc", animate = TRUE,
+        sliderInput( inputId = ns( "confcalc") , animate = TRUE,
                      label= "Level confidence Interval", min = 0.5,  max = 0.99, step= 0.05, value = 0.8 ), 
-        radioButtons('fit.selector', 'Method Fit',selected = 'mle', 
-                     c("Rank Regression"="RRxony",
-                       "MLE"='mle', 
-                       "MLE-rba" = 'mle-rba') ), 
-        radioButtons('method.conf', 'Method confidence',selected = 'lrb',
-                     c("Likelihood Ratio"='lrb', 
-                       "Beta Binomial"='bbb' ) )
+        radioButtons(inputId = ns('fit.selector'), 
+                     label = 'Method Fit', selected = 'mle', 
+                     choices = c("Rank Regression"="RRxony",
+                                 "MLE"='mle', 
+                                 "MLE-rba" = 'mle-rba') ), 
+        radioButtons(inputId = ns('method.conf'), 
+                     label = 'Method confidence',selected = 'lrb',
+                     choices = c("Likelihood Ratio"='lrb', 
+                                 "Beta Binomial"='bbb' ) )
 
         
       )
