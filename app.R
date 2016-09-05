@@ -5,17 +5,21 @@
 ### Libraries -----
 library(shinydashboard)
 library(shiny)
-# library(abrem) # Is this needed here?
-# library(ggvis) # Whenever doing ggvis, not yet...
+library(dplyr)
+library(ggplot2)
 
 options(shiny.maxRequestSize=30*1024^2)
 
 # Source modules
 # The code in ui.R is run once, when the Shiny app is started and it generates an HTML 
 # file which is cached and sent to each web browser that connects.
+# This is a candidate to go the global.R
 source("./R/module_generator.R")
 source("./R/module_UploadData.R")
 source("./R/module_WeibullCalculate.R")
+source("./R/module_Zero_test.R")
+
+
 
 ### UI PART ----
 
@@ -28,6 +32,9 @@ sidebar <- function(){
                 menuItem("Weibull Modeler", tabName = "modeler", icon = icon("bar-chart"), selected = F, 
                           menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData", selected = T),
                           menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel")), 
+                menuItem("Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'), selected = F, 
+                         menuSubItem("Time testing", icon = icon("time", lib = "glyphicon"),tabName = "ttesting", selected = T),
+                         menuSubItem("Components needed", icon = icon("gears"), tabName = "ctesting")), 
                 menuItem("Forecast Modeler", icon = icon("line-chart"),
                          menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
                          menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")), 
@@ -45,34 +52,29 @@ body <- function(){
       tabItem(tabName = "intro",          includeMarkdown("./text/intro_text.md") ),
       tabItem(tabName = "generator",      generator_UI("page_generator") ), 
       tabItem(tabName = "uploadData",     uploadData_UI("page_uploadData") ), 
-      tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ) )
+      tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ), 
+      tabItem(tabName = "ttesting",       zeroFailure_test_UI("page_ttest") )
+      )
     )
 }
 
 ## Bind ui together ----
 ui <- dashboardPage(
-  dashboardHeader(title = "Reliability dashboard"),
+  dashboardHeader(title = "R dashboard"),
   sidebar(),
   body())
 
 ### SERVER PART ----
 library(markdown)
-library(abrem)
-library(ggplot2)
-library(ggvis)
-library(dplyr)
 # source("./R/foo_make_abrem_plot.R")
 
 ## Server foo
 server <- function(input, output, session){
-  # This is not necessary here! 
-  source("./R/module_generator.R")
-  source("./R/module_UploadData.R")
-  source("./R/module_WeibullCalculate.R")
   
   callModule(generator_Server,        "page_generator")
   callModule(uploadData_server,       "page_uploadData")
   callModule(weibullCalculate_server, "page_calculate")
+  callModule(zeroFailure_test_server, "page_ttest")
 }
 
 ### Bind the app together ----
