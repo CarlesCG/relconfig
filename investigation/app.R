@@ -1,13 +1,24 @@
+library(ggplot2)
+library(plotly)
+library(dplyr)
+
+theme_set(theme_minimal())
+
+
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
-      numericInput("obs", "Number of components",min = 1, value =  3),
-      numericInput("dem_eta", "Characteristic life to demonstrate", 500),
-      numericInput("beta", "Beta of the failure mode to test", 1),
+      numericInput("obs", "Number of components testing",min = 1, value =  3),
+      numericInput(inputId = "beta", 
+                   label   = HTML("&beta;:","Beta of the failure mode to test"),
+                   value   = 1 ) ,
+      numericInput("dem_eta", HTML("&eta;:", "Characteristic life to demonstrate"), 500),
       sliderInput("confi", "Confidence", min = .6, max = .99, value = .1) ,
       helpText(""),
-      h3("Test time without failure"),
-      verbatimTextOutput("fixComponents_result")
+      h3("Time needed without failure to pass test"),
+      verbatimTextOutput("fixComponents_result"), 
+      h3("that is a characteristic life multiplyer (k) of:"),
+      verbatimTextOutput(  "lifeMultiplyer") 
     ),
     mainPanel(plotlyOutput("fixComponents_plot"))
   )
@@ -45,11 +56,16 @@ server <- function(input, output) {
     time_Pass_Zero_failure(n = input$obs, beta = input$beta, dem_eta = input$dem_eta, conf = input$confi) 
      
    })
+  output$lifeMultiplyer <- renderPrint({
+    k_At_Nconf(n = input$obs, beta = input$beta, 
+               conf = input$confi)
+    
+  })
   output$fixComponents_plot<- renderPlotly({
     nComponents <- input$obs
     
     
-    df <-expand.grid(
+    df <- expand.grid(
       obs= seq(1, input$obs* 1.5, by = 1 ), 
       beta = input$beta, 
       conf=  seq(0.6, .99, by=.01), 
@@ -66,7 +82,9 @@ server <- function(input, output) {
       geom_line(col="grey") +
       geom_line(data = df %>% filter(obs %in% input$obs), 
                 aes(x=ttest, y=conf), size=1.5, col="red") + 
-      ggtitle(paste0("Total of ",nComponents, " testing components"))
+      ylab("Confidence") + xlab("Duration testing time") + 
+      ggtitle(paste0("Total of ",nComponents, " testing components")) + 
+      theme_minimal()
     
     ggplotly(p)
   })

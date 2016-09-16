@@ -91,26 +91,35 @@ ggplotly(p)
 What about a Heat map? 
 ```{r}
 t <- df %>% as.tbl %>% 
-  filter(conf %in% 0.9) %>% 
+  filter(conf %in% 0.8) %>% 
   select(beta, k, n ) %>% 
   spread(key = beta, value = k)
   
 head(t)
-
+rownames(t) <- t$n
+t$n <- NULL
+utils::str(t)
+as.matrix(t)
 m <- as.matrix(t)
-plot_ly(z = t, type = "heatmap")
-    # ,
-colo    
+m
+plot_ly(z = m,  type = "heatmap") %>% 
+  layout(title = "Hello", 
+        xaxis = list( title = "Beta Value"), 
+        yaxis = list( title = "Number of copmponents" )) 
+
+heatmap(m)
 
 
-x <- list(
-    title = "x Axis"
+
+x <- list( title = "x Axis")
+y <- list( title = "LoL Axis" )
 )
-y <- list(
-    title = "LoL Axis"
-)
-plot_ly(z = volcano, colorscale = "Hot", type = "heatmap") %>% layout(title = "Hello", xaxis = x, yaxis = y) 
+plot_ly(z = volcano, colorscale = "Hot", type = "heatmap") 
 
+
+```
+F***  Heat maps!
+```{r}
 
 ```
 
