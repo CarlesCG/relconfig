@@ -59,6 +59,12 @@ zeroFailure_test_server <- function(input, output, session){
   
   ################################################################
   print("I am at the Server side Zero test module!")
+  ###### Correct to have in range numeric inputs ################
+  
+  # Something here!!
+  
+  
+  #################################################################
   
   output$fixComponents_result <- renderPrint({
     time_Pass_Zero_failure(n = input$obs, beta = input$beta, 
@@ -90,7 +96,7 @@ zeroFailure_test_server <- function(input, output, session){
     p <- ggplot(df, 
                 aes(x=ttest, y=conf, group=obs) ) +
       geom_line(col="grey") +
-      geom_line(data = df %>% filter(obs %in% input$obs), 
+      geom_line(data = df %>% dplyr::filter(obs %in% input$obs), 
                 aes(x=ttest, y=conf), size=1.5, col="red") + 
       ylab("Confidence") + xlab("Duration testing time") + 
       ggtitle(paste0("Total of ",nComponents, " testing components")) + 
