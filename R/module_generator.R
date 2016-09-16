@@ -24,9 +24,11 @@ generator_UI <- function(id){
         sliderInput( ns("nFailures"),
                      "Number of failures", min = 1, max = 100, value = 21, step=1), 
         sliderInput( ns("shape"),
-                     "Shape", min = 0.1, max = 7, value = 3,  step = 0.1), 
+                     HTML("&beta;:","Shape / Slope of the failure mode"), 
+                     min = 0.1, max = 7, value = 3,  step = 0.1), 
         sliderInput( ns("scale"),
-                     "Scale", min = 10, max = 500, value = 100, step = 50), 
+                     HTML("&eta;:", "Scale / Characteristic life"),  
+                     min = 10, max = 500, value = 100, step = 50), 
         br(),
         # Confident Intervals option
         checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals?", value = F),
@@ -109,6 +111,7 @@ generator_Server <- function(input, output, session){
   
   output$legendPlot <- renderDataTable({
     source("R/foo_abremLegend.R")
+    # Becouse weibull.generator will be cashed!
     WeibullLegend(weibull.generator())
     
   }, options= list(paging = F, searching = FALSE) )
