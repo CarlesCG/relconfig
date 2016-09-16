@@ -1,6 +1,6 @@
 # Make abrem pot function
 # with multiple failure modes capability!
-
+library(abrem)
 make_abrem_plot <- function(df, input=input, title){
   
 #   # Real data set
