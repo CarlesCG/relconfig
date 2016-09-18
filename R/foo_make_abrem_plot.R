@@ -1,7 +1,7 @@
 # Make abrem pot function
 # with multiple failure modes capability!
 library(abrem)
-make_abrem_plot <- function(df, input=input, title){
+make_abrem_plot <- function(df, input, title){
   
 #   # Real data set
 #   df <- data.frame(
@@ -22,7 +22,7 @@ make_abrem_plot <- function(df, input=input, title){
     print("Business as usual")
     
     # Create the data frame (this is redundant)
-    df <- data.frame(serial=df$serial, 
+    df <- data.frame(serial=df$part_id, 
                      time=df$time, event=df$event)
     print('1')
     # Fit abrem without fit.selection option! 

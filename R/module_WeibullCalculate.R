@@ -5,10 +5,10 @@ weibullCalculate_UI <- function(id){
       mainPanel(
         box(title = "Weibull plot generator", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
-            textOutput( ns("test2") ) ), 
-        box(title = "Weibull plot generator", width = 12,# height = 820, 
+            plotOutput( ns("abremplot") ) ), 
+        box(title = "Weibull summary", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
-            textOutput( ns("test") ) )
+            verbatimTextOutput( ns("test") ) )
       ), 
       sidebarPanel(
         sliderInput( inputId = ns( "confcalc") , animate = TRUE,
@@ -30,9 +30,15 @@ weibullCalculate_UI <- function(id){
 }
 
 
-weibullCalculate_server <- function(input, output, session){
+weibullCalculate_server <- function(input, output, session, data){
   
-  output$test2 <- renderText( paste0("This is a test!") )
+  output$test <- renderPrint( summary(data()) )
+  
+  source("./R/foo_make_abrem_plot.R")
+  output$abremplot <- renderPlot({
+    dummy2 <- read.csv("./data/Weibull_template.csv")
+    make_abrem_plot(df = dummy, input, title = "This is my plot")
+  })
   
   # df <- callModule(uploadData_server, "page_uploadData2")
   # output$table <- renderDataTable({ df() })

@@ -27,23 +27,28 @@ source("./R/module_Zero_test.R")
 sidebar <- function(){
   dashboardSidebar(
     sidebarMenu(id="menu1",
-                menuItem("Intro", tabName = "intro", icon = icon("info"), selected = F), 
-                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"), selected = F ), 
-                menuItem("Weibull Modeler", tabName = "modeler", icon = icon("bar-chart"), selected = F, 
-                          menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData", selected = T),
-                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel")), 
-                menuItem("Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'), selected = F, 
-                         menuSubItem("Time testing", icon = icon("time", lib = "glyphicon"),tabName = "ttesting", selected = T),
-                         menuSubItem("Components needed", icon = icon("gears"), tabName = "ctesting")), 
+                menuItem("Intro", tabName = "intro", icon = icon("info"),                                         selected = F), 
+                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"),                    selected = F), 
+                menuItem("Weibull Modeler", tabName = "modeler", icon = icon("bar-chart"),                        selected = F, 
+                          menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData",                 selected = F),
+                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel",       selected = T) 
+                         ), 
+                menuItem("Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'),             selected = F, 
+                         menuSubItem("Time testing", icon = icon("time", lib = "glyphicon"),tabName = "ttesting", selected = F),
+                         menuSubItem("Components needed", icon = icon("gears"), tabName = "ctesting") 
+                         ), 
                 menuItem("Forecast Modeler", icon = icon("line-chart"),
                          menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
-                         menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")), 
+                         menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")
+                         ), 
                 menuItem("Help", tabName = "help", icon = icon("question-circle"),
                          menuSubItem("About shinyHome", icon = icon("user"),tabName = "helpAbout"),
-                         menuSubItem("Welcome", icon = icon("coffee"),tabName = "helpWelcome") )
+                         menuSubItem("Welcome", icon = icon("coffee"),tabName = "helpWelcome") 
+                         )
     )
-    )
+  )
 }
+
 ### Body content --------------------------
 body <- function(){
   dashboardBody(
@@ -71,10 +76,10 @@ library(markdown)
 ## Server foo
 server <- function(input, output, session){
   
-  callModule(generator_Server,        "page_generator")
-  callModule(uploadData_server,       "page_uploadData")
-  callModule(weibullCalculate_server, "page_calculate")
-  callModule(zeroFailure_test_server, "page_ttest")
+                callModule(generator_Server,        "page_generator")
+  data  <-      callModule(uploadData_server,       "page_uploadData")
+                callModule(weibullCalculate_server, "page_calculate", data)
+                callModule(zeroFailure_test_server, "page_ttest")
 }
 
 ### Bind the app together ----
