@@ -38,8 +38,8 @@ weibullCalculate_server <- function(input, output, session, data){
   
   ## To test the plots
   # data <- reactive({
-    read.csv("./data/Weibull_template.csv")
-  })
+  #  read.csv("./data/Weibull_template.csv")
+  # })
   
   output$test <- renderPrint( summary(data()) )
   
