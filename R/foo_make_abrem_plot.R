@@ -1,5 +1,16 @@
 # Make abrem pot function
 # with multiple failure modes capability!
+
+
+## MODULE GENERATOR - improve
+# For small Betas (like 0.1) and condinden intervals plotting get an error
+# > Warning in dweibull(x, Beta, Eta, log = TRUE) : NaNs produced
+# > Warning in pweibull(s, Beta, Eta, lower.tail = FALSE, log.p = TRUE) :
+# >  NaNs produced
+# > Error in RadialSecant(RadEst, theta, Beta_hat, Eta_hat, RadLimit) : 
+# >  object 'Eta1' not found
+# > Error in if (X2 < 0) { : missing value where TRUE/FALSE needed
+
 library(abrem)
 make_abrem_plot <- function(df, input, title){
   
