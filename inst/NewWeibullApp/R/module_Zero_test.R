@@ -1,6 +1,7 @@
 ## Chapter 6-10
 
 library(plotly)
+library(abernethy)
 
 zeroFailure_test_UI <- function(id){
   ns <- NS(id)
@@ -39,70 +40,35 @@ zeroFailure_test_UI <- function(id){
   )
 }
 
-"The results are based on the null hypothesis, that the new design is no better than the old"
-
 zeroFailure_test_server <- function(input, output, session){
-  ######## FUNCTIONS ##############################################
-  ## Create functions
-  # Characteristic Life Multiplier {Section 6.1 New Weibull}
-  k_At_Nconf <- function(n, beta, conf){
-    # @param n number of components tested simultaneously
-    # @param beta shape of the Weibull distribution
-    # @param conf confidence to demonstrate
-    (-(1/n) * log(1-conf) ) ^ (1/beta) 
-  }
-  # Zero test failure
-  time_Pass_Zero_failure  <- function(n, beta, dem_eta, conf){
-    # k_At_Nconf Characteristic Life Multiplier at a confidence level
-    k_At_Nconf <- function(n, beta, conf){
-      (-(1/n) * log(1-conf) ) ^ (1/beta) 
-    }
-    
-    time <- ( k_At_Nconf(n, beta, conf) * dem_eta ) %>% round(., 2)
-    return( time ) 
-  }
-  
-  # Probability pass zero test
-  Probability_Passing_Zero_Test <- function(n, beta, conf, r){
-    # @inherits k_At_Nconf
-    # @param N number units test
-    # @param r ratio eta true / eta demonstrated
-    probability <- ( exp( ( -(k_At_Nconf(n, beta, conf)/r)^beta) ) )  ^ n
-    probability %>% round(., 3)
-    
-  }
-  
-  ## Testing area ####
 
-  # Probability_Passing_Zero_Test(n = 1, beta = .5, conf = .9, r=1 ) 
-  # 
   # t <- expand.grid(
-  #   r = seq(1, 5, by= .1), 
+  #   r = seq(1, 5, by= .1),
   #   beta = seq(.5, 5, by=.5) ) %>% as.tbl()
   # 
-  # t <- 
-  #   t %>% 
+  # t <-
+  #   t %>%
   #   mutate(
   #     Probability_Passing = Probability_Passing_Zero_Test(r = r, beta = beta, conf=.9, n=1) * 100)
   # 
   # 
-  # p <- ggplot(t, 
+  # p <- ggplot(t,
   #             aes(x=r, y=Probability_Passing, group=beta) ) +
   #   geom_line(col="grey") +
-  #   ylab("Probability of passing [%]") + xlab("Ratio True eta / Demonstrated eta") + 
-  #   ggtitle(paste0("Probability of passing Zero test Failure","XXX", " testing components")) + 
+  #   ylab("Probability of passing [%]") + xlab("Ratio True eta / Demonstrated eta") +
+  #   ggtitle(paste0("Probability of passing Zero test Failure","XXX", " testing components")) +
   #   theme_minimal()
   # 
   # 
-  # plot_ly(t, x=r, y=Probability_Passing, group=beta, 
-  #         hoverinfo= "text", 
-  #         text=paste("Probability of passing = ",Probability_Passing, " ; beta= ", beta) ) %>% 
+  # plot_ly(t, x=r, y=Probability_Passing, group=beta,
+  #         hoverinfo= "text",
+  #         text=paste("Probability of passing = ",Probability_Passing, " ; beta= ", beta) ) %>%
   #   layout(title ="Custom text",
   #          yaxis= list(
   #            title = "Metric choosen"
   #          ))
-  # 
-  # 
+
+
   
   ##############
   
