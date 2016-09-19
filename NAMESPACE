@@ -2,4 +2,6 @@
 
 export(Probability_Passing_Zero_Test)
 export(k_At_Nconf)
+export(make_abrem_plot)
 export(time_Pass_Zero_failure)
+import(abrem)
