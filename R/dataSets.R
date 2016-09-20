@@ -31,5 +31,6 @@
 #' }
 "twofm"
 
-# twofmTruncated <- read.csv("./inst/NewWeibullApp/data/sample_df_2FM_truncated.csv")
+# devtools::use_data(twofm, overwrite = T)
+#  twofmTruncated <- read.csv("./inst/NewWeibullApp/data/sample_df_2FM_truncated.csv")
 # devtools::use_data(twofmTruncated)
