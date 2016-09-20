@@ -1,3 +1,5 @@
+library(abernethy)
+
 weibullCalculate_UI <- function(id){
   ns <- NS(id)
   tagList(
@@ -34,14 +36,17 @@ weibullCalculate_UI <- function(id){
 
 
 weibullCalculate_server <- function(input, output, session, data){
-  source("./R/foo_make_abrem_plot.R")
+  # source("./R/foo_make_abrem_plot.R")
   
   ## To test the plots
   # data <- reactive({
   #  read.csv("./data/Weibull_template.csv")
   # })
   
-  output$test <- renderPrint( summary(data()) )
+  output$test <- renderPrint( 
+    # summary(data()) 
+    test()
+    )
   
   
   output$abremplot <- renderPlot({

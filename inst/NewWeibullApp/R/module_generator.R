@@ -1,4 +1,5 @@
-library(abrem)
+library(abernethy)
+# library(abrem)
 
 generator_UI <- function(id){
   
@@ -82,10 +83,10 @@ generator_Server <- function(input, output, session){
   
   weibull.generator <- reactive({
     # Data greneration 
-    # df <- data.generator()
+    df <- data.generator()
     
     # Fit abrem 
-    dfa <- Abrem(data.generator(), col="black", pch=2)
+    dfa <- Abrem(df , col="black", pch=2)
     dfa <- abrem.fit(dfa, col="blue")
     
     if(input$confinter == T){
