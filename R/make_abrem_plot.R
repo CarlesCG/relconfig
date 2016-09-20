@@ -29,14 +29,14 @@ make_abrem_plot <- function(df, input, title){
   # df is reactive expresion! 
   
   # If there is not any data.frame for the function the pick up one example data set
-  # if( is.null(input$file) == T){
-  #   print("input$file is 0")
-  #   df <- twofm
-  #   head ( print(df) )
-  #   }else{
-  #     print("input$file is 1")
-  #     df <- df()
-  #   }
+  if( is.null(input$file) == T){
+    print("input$file is 0")
+    df <- onefm
+    head ( print(df) )
+    }else{
+      print("input$file is 1")
+      df <- df()
+    }
 
   
   # data.initial <- reactive({
