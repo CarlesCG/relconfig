@@ -69,7 +69,7 @@ generator_Server <- function(input, output, session){
     # CHECK INPUTS
     # Check inputs before calculation
     validate(
-      need( try( input$nFailures < input$npoints +1), 
+      need( try( input$nFailures < input$npoints + 1), 
             message = "You can not have more failures than the sample population! Correcting the values...") )
     
     set.seed(1234)

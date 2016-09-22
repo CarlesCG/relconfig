@@ -11,6 +11,8 @@ library(ggplot2)
 
 options(shiny.maxRequestSize=30*1024^2)
 
+
+
 # Source modules
 # The code in ui.R is run once, when the Shiny app is started and it generates an HTML 
 # file which is cached and sent to each web browser that connects.

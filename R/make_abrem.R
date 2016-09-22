@@ -1,11 +1,13 @@
 # Make abrem pot function
 # with multiple failure modes capability!
+library(abernethy)
+library(abrem)
 
 # NECESITAS REESCRIBIR TODA ESTA MIERDA! NO HAY DIOS QUE LO ENTIENDA!!
 # SALEN UN HUEVO DE ERRORES CUANDO INTENTAS INICIALIZAR CON EL PLOT
 # DE LOS 2 FAILURE MODES! 
 
-## MODULE GENERATOR - improve
+# MODULE GENERATOR - improve
 # For small Betas (like 0.1) and condinden intervals plotting get an error
 # > Warning in dweibull(x, Beta, Eta, log = TRUE) : NaNs produced
 # > Warning in pweibull(s, Beta, Eta, lower.tail = FALSE, log.p = TRUE) :
@@ -43,7 +45,11 @@ make_abrem_plot <- function(df, input, title){
   #   validate(need(input$file, message = FALSE))
   #   df()
   # })
-  # 
+  
+  
+  message( 
+    sprintf("The input$selector reads the value %s", input$fit.selector) )
+  
   if(input$method.conf %in% 'lrb'){
     subtitle2 <- paste0("Likelihood Ratio confidence level ", input$confcalc*100," %", "(the red line)")
   } else { 
@@ -170,6 +176,99 @@ make_abrem_plot <- function(df, input, title){
                xlab="Time to Failure", 
                ylab="Occurrence CDF %")
   }
+}
+
+
+make_oneOrMore_abrems <- function(df, input){
+  
+  
+}
+
+
+#' Make one filure mode object
+#' 
+make_abrem <- function(df, input){
+  # Detect if data set is loaded. Otherwise, dummy
+  # df <- detect_df(df, input) 
+  
+  message("Only one failure mode detected")
+  
+  # Create the data frame (this is redundant)
+  df <- data.frame(serial=df$part_id,
+                   time=df$time, event=df$event)
+  
+  ### 2. Make abrem object with the df  
+  # Fit abrem without fit.selection option! 
+  dfa <- Abrem(df)
+  
+  # Work around due to the impossibility to render concatenated strings i.e. c('rr', 'xony')
+  # to HTMLwithout getting escaped!
+  if(input$fit.selector %in% "RRxony"){
+    dfa <- abrem.fit(dfa, col="blue", method.fit=c('rr', 'xony'))
+  }else{
+    # This get ok the mle and mle-rba
+    dfa <- abrem.fit(dfa, col="blue", method.fit=input$fit.selector)
+  }
+  
+  ### 3. Add confidence intervals
+  if(input$confinter == T){
+    dfa <- abrem.conf(dfa, 
+                      method.conf.blives= input$method.conf, 
+                      cl=                 input$conflevel_generator, 
+                      unrel.n=25, 
+                      lty=1, lwd=3, col="red")
+  }
+  
+  return(dfa)
+}
+
+
+#' Detec if there is one or more failure modes.
+#' 
+detect_fm <- function(df){
+  # df <- get ( data('onefm', package = 'abernethy') )
+  Nfm <- nlevels(df$failure_mode) - 1 
+  
+  message( sprintf("Number of fm present in the data set: %s", Nfm) )
+  return( Nfm)
+  }
+
+#' Detec if there is a df() loaded. If not pass dummy dataset.
+#' 
+detect_df <- function(df, input){
+  # If there is not any data.frame for the function the pick up one example data set
+  if( is.null(input$file) == T){ df <- data('onefm', package = 'abernethy')
+  }else{ df <- df() }
+}
+
+
+
+#' Plot abrem objects with options
+#' 
+#' @export
+#' @import abrem
+
+plot_abrem <- function(dfa, input, title){
+  
+  # Subtitle
+  if( input$confinter == T){
+    if( input$method.conf == 'lrb'){
+      subtitle2 <- paste0("Likelihood Ratio confidence level ", input$conflevel_generator*100," %", "(the red line)")
+    }else{ subtitle2 <- paste0("Beta Binomial confidence level ", input$conflevel_generator*100," %", "(the red line)")     
+    }
+  }else{
+    subtitle2 <- " "
+  }
+  
+  message('Plotting One fm')
+  # Plot
+  plot(dfa, 
+       main=title, 
+       sub=subtitle2, 
+       is.plot.legend=T,
+       xlab= "Time to Failure", 
+       ylab= "Occurrence CDF %")
+  
 }
 
 #' Testing funciton
