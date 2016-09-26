@@ -1,7 +1,6 @@
 ## Chapter 6-10
-
 library(plotly)
-library(abernethy)
+source("./R/Chp_6_Zero_tests.R")
 
 zeroFailure_test_UI <- function(id){
   ns <- NS(id)
@@ -70,10 +69,7 @@ zeroFailure_test_server <- function(input, output, session){
 
 
   
-  ##############
-  
-  
-  
+
   ################################################################
   print("I am at the Server side Zero test module!")
   ###### Correct to have in range numeric inputs ################
@@ -89,10 +85,11 @@ zeroFailure_test_server <- function(input, output, session){
     
   })
   output$lifeMultiplyer <- renderPrint({
-      k_At_Nconf(n = input$obs, beta = input$beta, 
-                 conf = input$confi) %>% 
-      round(., 2)
-
+    round(
+      x = k_At_Nconf(n = input$obs, beta = input$beta, 
+                 conf = input$confi), 
+      digits = 2)
+    
   })
   output$fixComponents_plot<- renderPlotly({
     nComponents <- input$obs
