@@ -1,7 +1,10 @@
 # library(abernethy)
 library(ggplot2)
 library(dplyr)
+source("./R/make_abrem.R")
 
+
+## To avoid the red error screen
 css <- "
 .shiny-output-error { visibility: hidden; }
 .shiny-output-error:before {
@@ -9,7 +12,7 @@ visibility: hidden;
 content: 'An error occurred. Please contact the admin.'; }
 }
 "
-
+###
 
 weibullCalculate_UI <- function(id){
   ns <- NS(id)
@@ -35,10 +38,11 @@ weibullCalculate_UI <- function(id){
                      choices = c("Rank Regression"="RRxony",
                                  "MLE"='mle', 
                                  "MLE-rba" = 'mle-rba') ), 
-        br(),
+        br(), 
         # Confident Intervals option
-        checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals?", value = F),
-        uiOutput( ns( "conditional_confinter"))
+        checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals", value = F),
+        uiOutput( ns( "conditional_confinter")), 
+        checkboxInput(inputId = ns("print.legend"), label = "Print legend", value = T)
         
 
 
@@ -50,7 +54,7 @@ weibullCalculate_UI <- function(id){
 
 
 weibullCalculate_server <- function(input, output, session, data){
-  source("./R/make_abrem.R")
+
   
   ## To test the plots
   # data <- reactive({
@@ -63,7 +67,7 @@ weibullCalculate_server <- function(input, output, session, data){
     ns <- session$ns
     if(input$confinter == T){
       tagList(
-        sliderInput(ns("conflevel_generator"), animate = TRUE,
+        sliderInput(ns("conflevel.generator"), animate = TRUE,
                     "Level confidence Interval", min = 0.5,  max = 0.99, step= 0.05, value = 0.8),
         radioButtons(inputId = ns('method.conf'), 
                      label = 'Method confidence',selected = 'lrb',
@@ -73,15 +77,21 @@ weibullCalculate_server <- function(input, output, session, data){
     }
   })
   
-  output$test <- renderPrint({ 
-    # summary(data()) 
-    test()
-  })
-  
   output$abremplot <- renderPlot({
-    # make_abrem_plot(df = data(), input, title = "This is my plot")
-    abrem.object <- make_abrem(df = data(), input)
-    plot_abrem( dfa = abrem.object, input,  title = "This is my plot" )
+    # Make my abrem
+    abrem.list <- make_several_abrems(df= data(), 
+                               fit.selector= input$fit.selector,
+                               conf.intervals= input$confinter, 
+                               conf.method= input$method.conf, 
+                               conf.level= input$conflevel.generator)
+    
+    # Plot my abrem object
+    plot_abrem( dfa = abrem.list, 
+                conf.intervals = input$confinter, 
+                conf.method = input$method.conf, 
+                conf.level = input$conflevel.generator,
+                is.plot.legend = input$print.legend, 
+                title = "This is my plot" )
   })
   
   output$ggdensity <- renderPlot({

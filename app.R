@@ -3,7 +3,6 @@
 #####################
 
 ### Libraries -----
-library(abernethy)
 library(shinydashboard)
 library(shiny)
 library(dplyr)
