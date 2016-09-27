@@ -19,7 +19,8 @@ options(shiny.maxRequestSize=30*1024^2)
 source("./R/module_generator.R")
 source("./R/module_UploadData.R")
 source("./R/module_WeibullCalculate.R")
-source("./R/module_Zero_test.R")
+source("./R/module_Time_testing_complete.R")
+source("./R/module_Time_testing_partial.R")
 
 ### UI PART ----
 
@@ -33,9 +34,9 @@ sidebar <- function(){
                           menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData",                 selected = F),
                           menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel",       selected = T) 
                          ), 
-                menuItem("Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'),             selected = F, 
-                         menuSubItem("Time testing", icon = icon("time", lib = "glyphicon"),tabName = "ttesting", selected = F),
-                         menuSubItem("Components needed", icon = icon("gears"), tabName = "ctesting") 
+                menuItem("Zero Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'),             selected = F, 
+                         menuSubItem("Time testing complete", icon = icon("time", lib = "glyphicon"),tabName = "ttesting" ),
+                         menuSubItem("Time testing partial", icon = icon("gears"), tabName = "Ntesting", selected = T) 
                          ), 
                 menuItem("Forecast Modeler", icon = icon("line-chart"),
                          menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
@@ -58,7 +59,8 @@ body <- function(){
       tabItem(tabName = "generator",      generator_UI("page_generator") ), 
       tabItem(tabName = "uploadData",     uploadData_UI("page_uploadData") ), 
       tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ), 
-      tabItem(tabName = "ttesting",       zeroFailure_test_UI("page_ttest") )
+      tabItem(tabName = "ttesting",       zeroFailure_test_UI("page_ttest")),
+      tabItem(tabName = "Ntesting",       Zerofailure_fix_time_UI("page_Ntest"))
       )
     )
 }
@@ -80,6 +82,7 @@ server <- function(input, output, session){
   data  <-      callModule(uploadData_server,       "page_uploadData")
                 callModule(weibullCalculate_server, "page_calculate", data)
                 callModule(zeroFailure_test_server, "page_ttest")
+                callModule(Zerofailure_fix_time_server, "page_Ntest")
 }
 
 ### Bind the app together ----
