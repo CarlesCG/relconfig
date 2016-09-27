@@ -1,4 +1,4 @@
-## Chapter 6-10
+## Chapter 6-9
 library(plotly)
 source("./R/Chp_6_Zero_tests.R")
 
@@ -18,29 +18,32 @@ zeroFailure_test_UI <- function(id){
                      value = 500),
         sliderInput( inputId = ns("confi") ,
                      label = "Confidence", 
-                     min = .6, max = .99, value = .1)
-       
+                     min = .6, max = .99, value = .1, 
+                     animate = T)
+        
       ),
       mainPanel(
         box(title = "Failure test plot", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
-            plotlyOutput( ns("fixComponents_plot") ) ), 
+            plotlyOutput( ns("fixComponents_plot") ) , 
+            footer = "How much time will it be necessary to pass the test? (for
+            different number of components in the test and different levels of 
+            confidence)"), 
         box(title = "Zero failure test", width = 6,# height = 820, 
             status="info", solidHeader = T, collapsible=F,  
             verbatimTextOutput( ns( "fixComponents_result") ), 
-            footer = "Time needed without failure to pass test"), 
+            footer =  textOutput( ns('fix_component_footer'))), 
         box(title = "Characteristic life multiplyer (k)", width = 6,# height = 820, 
-            status="info", solidHeader = T, collapsible=F,  
-            verbatimTextOutput( ns( "lifeMultiplyer") ), 
-            footer = "To increase or decrease the test time")
+                status="info", solidHeader = T, collapsible=F,  
+                verbatimTextOutput( ns( "lifeMultiplyer") ), 
+                footer = "To increase or decrease the test time")
+        )
       )
-
     )
-  )
 }
 
 zeroFailure_test_server <- function(input, output, session){
-
+  
   # t <- expand.grid(
   #   r = seq(1, 5, by= .1),
   #   beta = seq(.5, 5, by=.5) ) %>% as.tbl()
@@ -66,10 +69,10 @@ zeroFailure_test_server <- function(input, output, session){
   #          yaxis= list(
   #            title = "Metric choosen"
   #          ))
-
-
   
-
+  
+  
+  
   ################################################################
   print("I am at the Server side Zero test module!")
   ###### Correct to have in range numeric inputs ################
@@ -84,10 +87,18 @@ zeroFailure_test_server <- function(input, output, session){
                            dem_eta = input$dem_eta, conf = input$confi) 
     
   })
+  
+  output$fix_component_footer <- renderText({
+    paste0(    
+      "Time needed without a failure to show that the failure mode was either eleminated or significantly improved (with a ",
+      input$confi*100,
+      " % confidence)."
+    )
+  })
   output$lifeMultiplyer <- renderPrint({
     round(
       x = k_At_Nconf(n = input$obs, beta = input$beta, 
-                 conf = input$confi), 
+                     conf = input$confi), 
       digits = 2)
     
   })
@@ -112,11 +123,19 @@ zeroFailure_test_server <- function(input, output, session){
       geom_line(col="grey") +
       geom_line(data = df %>% dplyr::filter(obs %in% input$obs), 
                 aes(x=ttest, y=conf), size=1.5, col="red") + 
+    geom_hline(aes(yintercept= input$confi)) + 
       ylab("Confidence") + xlab("Duration testing time") + 
       ggtitle(paste0("Total of ",nComponents, " testing components")) + 
       theme_minimal()
     
+    
     ggplotly(p)
   })
+  
+  # output$fixComponents_plot<- renderPlotly({
+  #  plot <- fixComponents_plot_calculate() +  geom_hline(aes(yintercept= input$confi))  
+  #  
+  #  ggplotly(plot)
+  # })
   
 }
