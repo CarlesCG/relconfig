@@ -1,0 +1,104 @@
+---
+title: "Zero test failure"
+subtitle: "Reduced testing time"
+author: "Author"
+date: "`r as.Date(Sys.time())`"
+output: 
+pdf_document: 
+  toc: TRUE
+---
+
+```{r DEVELOPMENT, echo=FALSE}
+# source("../investigation/bar_inputGenerator.R")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+## The input parameters are: 
+
+```{r table, results="asis"}
+table.data <- data.frame(
+  "dem_eta" = input$dem_eta, 
+  "test_eta" = input$test_eta, 
+  "confi"= input$confi * 100)
+t <- t( table.data)
+rownames(t) <- c("ETA to demonstrate", "Time/Cycles available", "Confidence level [ % ]")
+
+knitr::kable(t, caption = "Input parameters")
+```
+
+## Plot
+```{r plot,fig.cap="How many componets are necessary, given a reduced testing time, to pass the test? (with  different testing time/cyle and different levels of confidence)"}
+library(ggplot2)
+df <- data.forPlot()
+
+p <- ggplot(df, 
+            aes(x=components.needed, y=conf, 
+                group= test_eta, col= as.factor( test_eta))) +
+  geom_line() + 
+  geom_hline(aes(yintercept= input$confi)) +
+  ylab("Confidence") + xlab("Number of components to test") + 
+  ggtitle(paste0("Total of ","______", " testing components")) +
+  theme_gray()
+
+p
+```
+
+```{r, eval=FALSE}
+library(plotly)
+
+df <- data.forPlot()
+p <- ggplot(df, 
+            aes(x=components.needed, y=conf, 
+                group= test_eta, col= as.factor( test_eta))) +
+  geom_line() + 
+  geom_hline(aes(yintercept= input$confi)) +
+  ylab("Confidence") + xlab("Number of components to test") + 
+  ggtitle(paste0("Total of ","______", " testing components")) +
+  theme_gray()
+
+ggplotly(p)
+```
+
+
+\pagebreak  
+
+# Appendix  
+
+## Table - Components needed: Time/Cyles vs. Confidence  
+
+The values at the table below are fixed for the variable inputs:   
+
+* Shape  $\beta =$ `r input$beta`
+* Characteristic life $\eta =$ `r input$dem_eta`
+
+
+  
+```{r Table of components needed }
+library(tidyr)
+df <- data.forPlot()
+df <- df %>% spread(key = test_eta, value = components.needed)
+df <- df %>% select(-beta, -dem_eta)
+  # df <- expand.grid(
+  #   test_eta= c( seq(.2, 1, by = .1) )  * input$dem_eta, 
+  #   beta = input$beta, 
+  #   dem_eta = input$dem_eta,
+  #   conf=  seq(0.7, .99, by=.01) )
+  # 
+  # df$components.needed <- samples_needed(
+  #   dem_eta = df$dem_eta,
+  #   test_eta = df$test_eta, 
+  #   beta = df$beta, 
+  #   conf = df$conf)
+
+knitr::kable(df)
+```
+
+Interpretation:  
+
+  - The numeric columns are the different testing time/cycles.
+  - The rows at the column *conf* are the different levels of confidence.
+  - The values inside the table are the different number of components to test to meet
+the requirements.
