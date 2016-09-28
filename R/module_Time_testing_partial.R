@@ -31,7 +31,12 @@ Zerofailure_fix_time_UI <- function(id){
         box(title = "Zero failure test", width = 6,# height = 820, 
             status="info", solidHeader = T, collapsible=F,  
             verbatimTextOutput( ns( "fix_time_result") ), 
-            footer =  textOutput( ns('fix_component_footer')))
+            footer =  textOutput( ns('fix_component_footer'))), 
+        box(title = "Download report", 
+            solidHeader = T, collapsible = T, collapsed = T,  background = "black",
+            radioButtons(ns('format'), label = '',choices =  c('PDF', 'HTML', 'Word'),
+                         inline = TRUE),
+            downloadButton(ns('downloadReport') ) )
         )
       )
     )
@@ -39,9 +44,9 @@ Zerofailure_fix_time_UI <- function(id){
 
 Zerofailure_fix_time_server <- function(input, output, session){
   
-  ################################################################
+  ################################################################ --
   print("I am at the Server side of the Time testing partial!")
-  ###### Correct to have in range numeric inputs ################
+  ###### Correct to have in range numeric inputs ################ --
   # Something here!!
   
   output$fix_time_result <- renderPrint({
@@ -57,20 +62,24 @@ Zerofailure_fix_time_server <- function(input, output, session){
     )
   })
 
+  data.forPlot <- reactive({
+  # seq(.01, .1,by = .01)
+  df <- expand.grid(
+    test_eta= c( seq(.2, 1, by = .1) )  * input$dem_eta, 
+    beta = input$beta, 
+    dem_eta = input$dem_eta,
+    conf=  seq(0.7, .99, by=.01) )
+  
+  df$components.needed <- samples_needed(
+    dem_eta = df$dem_eta,
+    test_eta = df$test_eta, 
+    beta = df$beta, 
+    conf = df$conf)
+  return(df)
+  
+})
   output$fix_time_plot<- renderPlotly({
-    # seq(.01, .1,by = .01)
-    df <- expand.grid(
-      test_eta= c( seq(.2, 1, by = .1) )  * input$dem_eta, 
-      beta = input$beta, 
-      dem_eta = input$dem_eta,
-      conf=  seq(0.7, .99, by=.01) )
-    
-    df$components.needed <- samples_needed(
-      dem_eta = df$dem_eta,
-      test_eta = df$test_eta, 
-      beta = df$beta, 
-      conf = df$conf)
-    
+      df <- data.forPlot()
     # df  <- df %>% filter(components.needed < 1500)
     
     p <- ggplot(df, 
@@ -84,5 +93,28 @@ Zerofailure_fix_time_server <- function(input, output, session){
     
     ggplotly(p)
   })
+  
+  output$downloadReport <- downloadHandler(
+    filename= function(){
+      paste('Report Zero test failure', sep = '.', switch(
+        input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
+      ))
+    },
+    content = function(file) {
+      src <- normalizePath('./reports/report_Zero_test_fix_time.Rmd')
+      
+      # temporarily switch to the temp dir, in case you do not have write
+      # permission to the current working directory
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, 'report.Rmd', overwrite = TRUE)
+      
+      library(rmarkdown)
+      out <- render('report.Rmd', switch(
+        input$format,
+        PDF = pdf_document(), HTML = html_document(), Word = word_document()
+      ))
+      file.rename(out, file)
+    } )
   
 }
