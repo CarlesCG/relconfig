@@ -3,9 +3,15 @@ title: "Zero test failure"
 subtitle: "Reduced testing time"
 author: "Author"
 date: "`r as.Date(Sys.time())`"
-output: 
-pdf_document: 
-  toc: TRUE
+output: pdf_document
+params: 
+  dem_eta: 500
+  test_eta: 200
+  beta: 2
+  data: NA
+  confi: .5
+  result: 1
+
 ---
 
 ```{r DEVELOPMENT, echo=FALSE}
@@ -13,48 +19,88 @@ pdf_document:
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F)
+knitr::opts_chunk$set(echo = F, eval = T)
 ```
 
-## The input parameters are: 
 
-```{r table, results="asis"}
+# Result(s)
+
+Number of components needed to test without failure to show that the failure mode was either eleminated or significantly 
+improved (with a ```r params$confi * 100```% confidence).
+
+```{r table.result, results='asis', eval=TRUE}
+result <-  params$result
+table.result <- data.frame("Number.of.components" = result )
+t <- t(table.result)
+
+rownames(t) <- c("Number of component(s) needed")
+knitr::kable(t, caption = "Result", col.names = "Value")
+```
+
+The result(s) were calculated with the following parameters. 
+
+```{r table, results="asis", eval=TRUE}
 table.data <- data.frame(
-  "dem_eta" = input$dem_eta, 
-  "test_eta" = input$test_eta, 
-  "confi"= input$confi * 100)
-t <- t( table.data)
-rownames(t) <- c("ETA to demonstrate", "Time/Cycles available", "Confidence level [ % ]")
+  "dem_eta" = params$dem_eta, 
+  "test_eta" = params$test_eta, 
+  "confi"= params$confi)
+table.data$confi <- table.data$confi*100
 
-knitr::kable(t, caption = "Input parameters")
+t <- t( table.data)
+rownames(t) <- c("ETA to demonstrate", 
+                 "Time/Cycles available", "Confidence level [ % ]")
+
+knitr::kable(t, caption = "Input parameters", col.names = "Value")
 ```
+
+
+# Reference 
+- Section 6.9 Zero test failure for substaintion testing
+- Formula from Table 6-3.
+
+Number of components $$n= -( (\frac{\eta}{t})^\beta)*ln(R(t))$$
+
+Where:  
+
+- $\eta$ characteristics life of the failure mechanism
+- $t$ time available for the zero failure test 
+- $\beta$ shape of the failure mechanism
+- $R(t) = 1 - Confidence$
+
+
+
+
+
+
+
+\pagebreak
 
 ## Plot
-```{r plot,fig.cap="How many componets are necessary, given a reduced testing time, to pass the test? (with  different testing time/cyle and different levels of confidence)"}
+```{r plot, fig.cap="How many componets are necessary, given a reduced testing time, to pass the test? (with  different testing time/cyle and different levels of confidence)"}
 library(ggplot2)
-df <- data.forPlot()
+df <- params$data
 
 p <- ggplot(df, 
             aes(x=components.needed, y=conf, 
                 group= test_eta, col= as.factor( test_eta))) +
   geom_line() + 
-  geom_hline(aes(yintercept= input$confi)) +
+  geom_hline(aes(yintercept= params$confi)) +
   ylab("Confidence") + xlab("Number of components to test") + 
   ggtitle(paste0("Total of ","______", " testing components")) +
-  theme_gray()
+  theme_classic()
 
 p
 ```
 
 ```{r, eval=FALSE}
 library(plotly)
+df <- params$data
 
-df <- data.forPlot()
 p <- ggplot(df, 
             aes(x=components.needed, y=conf, 
                 group= test_eta, col= as.factor( test_eta))) +
   geom_line() + 
-  geom_hline(aes(yintercept= input$confi)) +
+  geom_hline(aes(yintercept= params$confi)) +
   ylab("Confidence") + xlab("Number of components to test") + 
   ggtitle(paste0("Total of ","______", " testing components")) +
   theme_gray()
@@ -65,33 +111,20 @@ ggplotly(p)
 
 \pagebreak  
 
-# Appendix  
-
-## Table - Components needed: Time/Cyles vs. Confidence  
+# Components needed: Time/Cyles vs. Confidence  
 
 The values at the table below are fixed for the variable inputs:   
 
-* Shape  $\beta =$ `r input$beta`
-* Characteristic life $\eta =$ `r input$dem_eta`
+* Shape  $\beta =$ `r params$beta`
+* Characteristic life $\eta =$ `r params$dem_eta`
 
 
   
 ```{r Table of components needed }
 library(tidyr)
-df <- data.forPlot()
+df <- params$data
 df <- df %>% spread(key = test_eta, value = components.needed)
 df <- df %>% select(-beta, -dem_eta)
-  # df <- expand.grid(
-  #   test_eta= c( seq(.2, 1, by = .1) )  * input$dem_eta, 
-  #   beta = input$beta, 
-  #   dem_eta = input$dem_eta,
-  #   conf=  seq(0.7, .99, by=.01) )
-  # 
-  # df$components.needed <- samples_needed(
-  #   dem_eta = df$dem_eta,
-  #   test_eta = df$test_eta, 
-  #   beta = df$beta, 
-  #   conf = df$conf)
 
 knitr::kable(df)
 ```

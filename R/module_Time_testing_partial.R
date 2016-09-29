@@ -31,7 +31,7 @@ Zerofailure_fix_time_UI <- function(id){
         box(title = "Zero failure test", width = 6,# height = 820, 
             status="info", solidHeader = T, collapsible=F,  
             verbatimTextOutput( ns( "fix_time_result") ), 
-            footer =  textOutput( ns('fix_component_footer'))), 
+            footer =  textOutput( ns('fix_time_footer'))), 
         box(title = "Download report", 
             solidHeader = T, collapsible = T, collapsed = T,  background = "black",
             radioButtons(ns('format'), label = '',choices =  c('PDF', 'HTML', 'Word'),
@@ -49,14 +49,20 @@ Zerofailure_fix_time_server <- function(input, output, session){
   ###### Correct to have in range numeric inputs ################ --
   # Something here!!
   
-  output$fix_time_result <- renderPrint({
-    samples_needed(dem_eta = input$dem_eta, test_eta= input$test_eta , 
+  fix.time.calculation <- reactive({
+    return(
+        samples_needed(dem_eta = input$dem_eta, test_eta= input$test_eta , 
                    beta= input$beta, conf= input$confi )
+    )
+  })
+  output$fix_time_result <- renderPrint({
+    fix.time.calculation()
   })
   
+  # text.for.footer <- 
   output$fix_time_footer <- renderText({
     paste0(    
-      "Time needed without a failure to show that the failure mode was either eleminated or significantly improved (with a ",
+      "Number of components needed to test without failure to show that the failure mode was either eleminated or significantly improved (with a ",
       input$confi*100,
       " % confidence)."
     )
@@ -109,11 +115,22 @@ Zerofailure_fix_time_server <- function(input, output, session){
       on.exit(setwd(owd))
       file.copy(src, 'report.Rmd', overwrite = TRUE)
       
+      # Set up parameters to pass to Rmd document
+      params <- list(dem_eta = input$dem_eta, 
+                     beta = input$beta, 
+                     data= data.forPlot(), 
+                     confi= input$confi, 
+                     result= fix.time.calculation())
+      
       library(rmarkdown)
-      out <- render('report.Rmd', switch(
-        input$format,
-        PDF = pdf_document(), HTML = html_document(), Word = word_document()
-      ))
+      out <- render('report.Rmd', 
+                    output_format = switch(input$format,
+                                           PDF = pdf_document(), 
+                                           HTML = html_document(),
+                                           Word = word_document()), 
+                    params = params,
+                    envir = new.env(parent = globalenv())
+      )
       file.rename(out, file)
     } )
   
