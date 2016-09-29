@@ -43,45 +43,9 @@ zeroFailure_test_UI <- function(id){
 }
 
 zeroFailure_test_server <- function(input, output, session){
-  
-  # t <- expand.grid(
-  #   r = seq(1, 5, by= .1),
-  #   beta = seq(.5, 5, by=.5) ) %>% as.tbl()
-  # 
-  # t <-
-  #   t %>%
-  #   mutate(
-  #     Probability_Passing = Probability_Passing_Zero_Test(r = r, beta = beta, conf=.9, n=1) * 100)
-  # 
-  # 
-  # p <- ggplot(t,
-  #             aes(x=r, y=Probability_Passing, group=beta) ) +
-  #   geom_line(col="grey") +
-  #   ylab("Probability of passing [%]") + xlab("Ratio True eta / Demonstrated eta") +
-  #   ggtitle(paste0("Probability of passing Zero test Failure","XXX", " testing components")) +
-  #   theme_minimal()
-  # 
-  # 
-  # plot_ly(t, x=r, y=Probability_Passing, group=beta,
-  #         hoverinfo= "text",
-  #         text=paste("Probability of passing = ",Probability_Passing, " ; beta= ", beta) ) %>%
-  #   layout(title ="Custom text",
-  #          yaxis= list(
-  #            title = "Metric choosen"
-  #          ))
-  
-  
-  
-  
-  ################################################################
+
   print("I am at the Server side Zero test module!")
-  ###### Correct to have in range numeric inputs ################
-  
-  # Something here!!
-  
-  
-  #################################################################
-  
+
   output$fixComponents_result <- renderPrint({
     time_Pass_Zero_failure(n = input$obs, beta = input$beta, 
                            dem_eta = input$dem_eta, conf = input$confi) 
