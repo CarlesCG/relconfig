@@ -31,7 +31,7 @@ zeroFailure_test_UI <- function(id){
             confidence)"), 
         box(title = "Zero failure test", width = 6,# height = 820, 
             status="info", solidHeader = T, collapsible=F,  
-            verbatimTextOutput( ns( "fixComponents_result") ), 
+            verbatimTextOutput( ns( "fix_components_result") ), 
             footer =  textOutput( ns('fix_component_footer'))), 
         box(title = "Characteristic life multiplyer (k)", width = 6,# height = 820, 
                 status="info", solidHeader = T, collapsible=F,  
@@ -46,7 +46,7 @@ zeroFailure_test_server <- function(input, output, session){
 
   print("I am at the Server side Zero test module!")
 
-  output$fixComponents_result <- renderPrint({
+  output$fix_components_result <- renderPrint({
     time_Pass_Zero_failure(n = input$obs, beta = input$beta, 
                            dem_eta = input$dem_eta, conf = input$confi) 
     

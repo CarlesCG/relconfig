@@ -67,7 +67,7 @@ Probability_Passing_Zero_Test <- function(n, beta, r, conf=.9){
 
 ### Section 6.9 Zero test failure for substaintion testing
 
-#' Required sample size for partial test plan
+#' Required sample size for partial test plan. Formula from Table 6.3
 #' 
 #' @param dem_eta Requirement to demonstrate new eta (scale)
 #' @param test_eta Maximum number of cycles that the will eb able to run
