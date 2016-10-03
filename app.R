@@ -3,8 +3,10 @@
 #####################
 
 ### Libraries -----
-library(shinydashboard)
 library(shiny)
+library(shinyjs)
+library(shinydashboard)
+
 library(dplyr)
 library(ggplot2)
 
@@ -53,6 +55,11 @@ sidebar <- function(){
 ### Body content --------------------------
 body <- function(){
   dashboardBody(
+    # useShinyjs(), 
+    # tagList(
+    #   tags$script(type="text/javascript", src = "busy.js")
+    # ),
+    # tags$head( tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css")), 
     tabItems(
       ## Intro tab content ----
       tabItem(tabName = "intro",          includeMarkdown("./text/intro_text.md") ),
@@ -67,7 +74,7 @@ body <- function(){
 
 ## Bind ui together ----
 ui <- dashboardPage(
-  dashboardHeader(title = "R dashboard"),
+  dashboardHeader(title = HTML(paste(icon('cubes'), 'dashboard') ) ),
   sidebar(),
   body())
 
