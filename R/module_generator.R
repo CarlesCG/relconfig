@@ -21,9 +21,9 @@ generator_UI <- function(id){
         # width = 2, 
         tabName="Variables", 
         sliderInput( ns("npoints"),
-                     "Total sample", min = 3, max = 100 , value = 50, step=1), 
+                     "Total sample", min = 4, max = 100 , value = 50, step=1), 
         sliderInput( ns("nFailures"),
-                     "Number of failures", min = 2, max = 100, value = 21, step=1), 
+                     "Number of failures", min = 3, max = 100, value = 21, step=1), 
         sliderInput( ns("shape"),
                      HTML("&beta;:","Shape / Slope of the failure mode"), 
                      min = 0.1, max = 7, value = 3,  step = 0.1), 
@@ -129,9 +129,37 @@ generator_Server <- function(input, output, session){
   
   output$facts <- renderValueBox({
     
+    # Shorten the variable name
+    fit <- weibull.generator()$fit[[1]]
+    # options <- fit$options
+    
+    # Significant digits
+    si <- function(number) signif(number, 3)
+    
+    # Select the icon 
+    icon.fit <- ifelse(fit$gof$r2 >= fit$gof$ccc2, "thumbs-up", "thumbs-down")
+      
     valueBox(
-      paste0("$", weibull.generator()$n), paste(weibull.generator()$n, " Testing  "), 
-      icon = icon("dollar"), color = "green" )
+      value = ifelse(fit$gof$r2 >= fit$gof$ccc2, "Good fit", "Bad fit"), 
+      subtitle = paste0("r^2 | CCC^2 = ", 
+                        si(fit$gof$r2), " | ", si(fit$gof$ccc2), 
+                        ifelse(fit$gof$r2 >= fit$gof$ccc2, " (good)", 
+                               " (BAD)")), 
+      icon =  icon(icon.fit, lib = "glyphicon"),
+      color = ifelse(fit$gof$r2 >= fit$gof$ccc2, "green", "orange")
+    )
+    
+    # valueBox(
+    #   value = paste0("r^2 | CCC^2 = ", 
+    #                  si(fit$gof$r2), " | ", si(fit$gof$ccc2), 
+    #                  ifelse(fit$gof$r2 >= fit$gof$ccc2, " (good)", 
+    #                         " (BAD)")), 
+    #   subtitle = ifelse(fit$gof$r2 >= fit$gof$ccc2, " (good)", " (BAD)"),
+    #   icon = ifelse(fit$gof$r2 >= fit$gof$ccc2, 
+    #                 icon("thumbs-up", lib = "glyphicon"), 
+    #                 icon("thumbs-down", lib = "glyphicon")),
+    #   color = ifelse(fit$gof$r2 >= fit$gof$ccc2, "green", "red")
+    #   )
   })
   
   
