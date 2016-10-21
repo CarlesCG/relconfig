@@ -5,7 +5,13 @@ source("./R/Chp_6_Zero_tests.R")
 Zerofailure_fix_time_UI <- function(id){
   ns <- NS(id)
   tagList(
-    sidebarLayout(
+   
+     column(width = 12,
+      box(title = "Introduction",   width = NULL, 
+          status="info", solidHeader = F, collapsible=T,  collapsed = T, 
+          includeMarkdown("./text/intro_text.md"))
+      ), 
+    sidebarLayout(position = "right",
       sidebarPanel(
         numericInput(inputId = ns("beta"), 
                      label   = HTML("&beta;:","Beta of the failure mode to test"),
@@ -22,7 +28,7 @@ Zerofailure_fix_time_UI <- function(id){
                      animate = T)
       ),
       mainPanel(
-        box(title = "___ plot", width = 12,# height = 820, 
+        box(title = "___ ", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotlyOutput( ns("fix_time_plot") ) , 
             footer = "How much time will it be necessary to pass the test? (for
@@ -38,8 +44,16 @@ Zerofailure_fix_time_UI <- function(id){
                          inline = TRUE),
             downloadButton(ns('downloadReport') ) )
         )
-      )
+      ),
+    
+      box(title = "Introduction",   width = NULL, 
+          status="info", solidHeader = F, collapsible=T,  collapsed = T, 
+          includeMarkdown("./text/intro_text.md"))
+    
+    
+  
     )
+  
 }
 
 Zerofailure_fix_time_server <- function(input, output, session){
@@ -81,7 +95,7 @@ Zerofailure_fix_time_server <- function(input, output, session){
     test_eta = df$test_eta, 
     beta = df$beta, 
     conf = df$conf)
-  return(df)
+  return(df) 
   
 })
   output$fix_time_plot<- renderPlotly({
