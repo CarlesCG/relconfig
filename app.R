@@ -29,14 +29,14 @@ sidebar <- function(){
   dashboardSidebar(
     sidebarMenu(id="menu1",
                 menuItem("Intro", tabName = "intro", icon = icon("info"),                                         selected = F), 
-                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"),                    selected = F), 
+                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"),                    selected = T), 
                 menuItem("Weibull Modeler", tabName = "modeler", icon = icon("bar-chart"),                        selected = F, 
                           menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData",                 selected = F),
-                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel",       selected = T) 
+                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel",       selected = F) 
                          ), 
                 menuItem("Zero Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'),             selected = F, 
                          menuSubItem("Time testing complete", icon = icon("time", lib = "glyphicon"),tabName = "ttesting" ),
-                         menuSubItem("Time testing partial", icon = icon("gears"), tabName = "Ntesting", selected = T) 
+                         menuSubItem("Time testing partial", icon = icon("gears"), tabName = "Ntesting", selected = F) 
                          ), 
                 menuItem("Forecast Modeler", icon = icon("line-chart"),
                          menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
@@ -65,9 +65,59 @@ body <- function(){
     )
 }
 
+header <- function(){
+  dashboardHeader(title = "R dashboard", 
+                  dropdownMenu(type = "messages",
+                               messageItem(
+                                 from = "Sales Dept",
+                                 message = "Sales are steady this month."),
+                               messageItem(
+                                 from = "New User",
+                                 message = "How do I register?",
+                                 icon = icon("question"),
+                                 time = "13:45"),
+                               messageItem(
+                                 from = "Support",
+                                 message = "The new server is ready.",
+                                 icon = icon("life-ring"),
+                                 time = "2014-12-01")
+                  ), 
+                  dropdownMenu(type = "notifications",
+                               notificationItem(
+                                 text = "5 new users today",
+                                 icon("users")
+                               ),
+                               notificationItem(
+                                 text = "12 items delivered",
+                                 icon("truck"),
+                                 status = "success"
+                               ),
+                               notificationItem(
+                                 text = "Server load at 86%",
+                                 icon = icon("exclamation-triangle"),
+                                 status = "warning"
+                               )
+                  ), 
+                  dropdownMenu(type = "tasks", badgeStatus = "success",
+                               taskItem(value = 90, color = "green",
+                                        "Documentation"
+                               ),
+                               taskItem(value = 17, color = "aqua",
+                                        "Project X"
+                               ),
+                               taskItem(value = 75, color = "yellow",
+                                        "Server deployment"
+                               ),
+                               taskItem(value = 80, color = "red",
+                                        "Overall project"
+                               )
+                  )
+  )
+}
+
 ## Bind ui together ----
 ui <- dashboardPage(
-  dashboardHeader(title = "R dashboard"),
+  header(),
   sidebar(),
   body())
 

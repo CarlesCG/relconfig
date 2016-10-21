@@ -7,16 +7,19 @@ generator_UI <- function(id){
   tagList(
     sidebarLayout(
       mainPanel(
-       
+        
         box(title = "Weibull plot generator", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("logplot") ) ), 
         valueBoxOutput(ns( "facts" ), width = 12), 
+        box(title = "Countur plot", width = 12,
+            status="info", solidHeader = T, collapsible=T,  
+            plotOutput(ns("countour_plot")  ) ), 
         box(title = "Technicall info", 
             status="info", solidHeader = T, collapsible=T,  
-            dataTableOutput(ns("legendPlot")  ) )
-        ), 
-
+            dataTableOutput(ns("legendPlot")  ) ) 
+      ), 
+      
       sidebarPanel(
         # width = 2, 
         tabName="Variables", 
@@ -103,12 +106,12 @@ generator_Server <- function(input, output, session){
     subtitle <- ""
     
     
-    # Adding confident intervals
-    if(input$confinter == T){
-      subtitle <- paste0("Likelihood Ratio confidence level ",
-                         input$conflevel_generator*100," %", "(the red line)")
-    }
-    
+    # # Adding confident intervals
+    # if(input$confinter == T){
+    #   subtitle <- paste0("Likelihood Ratio confidence level ",
+    #                      input$conflevel_generator*100," %", "(the red line)")
+    # }
+    # 
     
     # Plot
     plot(weibull.generator(), 
@@ -138,7 +141,7 @@ generator_Server <- function(input, output, session){
     
     # Select the icon 
     icon.fit <- ifelse(fit$gof$r2 >= fit$gof$ccc2, "thumbs-up", "thumbs-down")
-      
+    
     valueBox(
       value = ifelse(fit$gof$r2 >= fit$gof$ccc2, "Good fit", "Bad fit"), 
       subtitle = paste0("r^2 | CCC^2 = ", 
@@ -160,6 +163,53 @@ generator_Server <- function(input, output, session){
     #                 icon("thumbs-down", lib = "glyphicon")),
     #   color = ifelse(fit$gof$r2 >= fit$gof$ccc2, "green", "red")
     #   )
+  })
+  
+  output$countour_plot <- renderPlot({
+    # If there is confident intervals plot the contour plot
+    # otherwise just a plot with a dot
+    
+    if(input$confinter == T){
+      levels.confidence <- function(weibull.data, conf.levels= c(.5, .8, .95) ){
+        levels.calc <- as.list(conf.levels)
+        dfa <- lapply(levels.calc, FUN = function(X){
+          abrem.conf(weibull.data, method.conf.blives="lrb", cl=X,
+                     unrel.n=25, S=10000, is.plot.cb=T,  in.legend.blives=F, 
+                     lty=1, lwd=3, col="red") })
+        return(dfa)
+        
+      }
+      list.abrems.confidence <- levels.confidence(weibull.generator())
+      
+      list.data.plot <- lapply(list.abrems.confidence, function(X){
+        data.frame(
+          eta = X$fit[[1]]$conf$blives[[2]]$MLEXContour[[1]]$Eta, 
+          beta = X$fit[[1]]$conf$blives[[2]]$MLEXContour[[1]]$Beta, 
+          Plevel =  paste0("P", X$fit[[1]]$conf$blives[[2]]$options$cl*100) 
+        )
+      })
+      
+      # Change list to a data frame
+      df.plot <- data.table::rbindlist(list.data.plot)
+      
+      # Get the dot
+      df.dot <- data.frame(
+        eta= weibull.generator()$fit[[1]]$eta, 
+        beta= weibull.generator()$fit[[1]]$beta)
+      
+      # Construct the plot
+      ggplot() +
+       geom_polygon(data=df.plot, aes(x = eta,y = beta,fill = Plevel, color=Plevel),alpha = .05, lty=5) + 
+       geom_point(data = df.dot, aes(x=eta, y=beta), lwd=2, color='red')
+    
+    }else{
+      df.dot <- data.frame(
+        eta= weibull.generator()$fit[[1]]$eta, 
+        beta= weibull.generator()$fit[[1]]$beta
+      )
+      v <- ggplot(df.dot, aes(x=eta, y=beta))
+      v + geom_point(lwd=2,color='red')
+    }
   })
   
   
