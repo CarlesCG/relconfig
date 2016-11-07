@@ -5,6 +5,12 @@ source("./R/Chp_6_Zero_tests.R")
 zeroFailure_test_UI <- function(id){
   ns <- NS(id)
   tagList(
+    column(width = 12,
+           box(title = "Zero-Failure Test plans",   width = NULL, 
+               solidHeader = F, collapsible=T,  collapsed = T, 
+               includeMarkdown("./text/text_Time_testing_complete.md"))
+    ), 
+    
     sidebarLayout(
       sidebarPanel(
         numericInput(inputId = ns("obs"),

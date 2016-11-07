@@ -8,8 +8,8 @@ Zerofailure_fix_time_UI <- function(id){
    
      column(width = 12,
       box(title = "Introduction",   width = NULL, 
-          status="info", solidHeader = F, collapsible=T,  collapsed = T, 
-          includeMarkdown("./text/intro_text.md"))
+          solidHeader = F, collapsible=T,  collapsed = T, 
+          includeMarkdown("./text/text_Time_testing_partial.md"))
       ), 
     sidebarLayout(position = "right",
       sidebarPanel(
@@ -44,14 +44,7 @@ Zerofailure_fix_time_UI <- function(id){
                          inline = TRUE),
             downloadButton(ns('downloadReport') ) )
         )
-      ),
-    
-      box(title = "Introduction",   width = NULL, 
-          status="info", solidHeader = F, collapsible=T,  collapsed = T, 
-          includeMarkdown("./text/intro_text.md"))
-    
-    
-  
+      )
     )
   
 }
@@ -130,12 +123,13 @@ Zerofailure_fix_time_server <- function(input, output, session){
       file.copy(src, 'report.Rmd', overwrite = TRUE)
       
       # Set up parameters to pass to Rmd document
-      params <- list(dem_eta = input$dem_eta, 
-                     beta = input$beta, 
-                     data= data.forPlot(), 
-                     confi= input$confi, 
-                     result= fix.time.calculation())
-      
+       params <- list(dem_eta = input$dem_eta, 
+                      test_eta= input$test_eta, 
+                      beta = input$beta, 
+                      data= data.forPlot(), 
+                      confi= input$confi, 
+                      result= fix.time.calculation())
+
       library(rmarkdown)
       out <- render('report.Rmd', 
                     output_format = switch(input$format,
