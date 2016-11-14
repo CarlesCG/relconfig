@@ -1,0 +1,162 @@
+---
+title: "Section 4.2 Now Risk"
+subtitle: "Forecasting"
+author: "Carles C.G."
+output: html_document
+---
+
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(abrem)
+library(dplyr)
+library(tibble)
+source("../R/Chp_4_NowRisk.R")
+load("../data/onefm.rda")
+df <- onefm
+```
+
+
+
+## Now risk RBA
+# Get the eta beta
+```{r weibull}
+r <- extrac_param(df)
+eta  <- r$eta
+beta <- r$beta
+
+# Test the now Risk. There are 6 failures in the data set
+NowRiskRBA(df, eta, beta)
+```
+
+
+# Exercice 
+Example: Equation 4-2 will be used to calculate the expected failures now for a fleet of 20 pumps, one of which has failed at 2000 hours and another at 3000 hours. There are 5 suspensions at ages of 1000 and 4000 hours, and 4 at 2000 and 3000 hours, respectively. SSW software was used to generate the Weibull plot below from the data above where ~ = 2.63 and 11 = 6210 hours. The first question is, **"What is the expected
+number of failures from time zero to now for this population?"**
+
+```{r example}
+df <- data.frame( 
+  time= c(2000, 3000, rep(1000, 5), rep(4000, 5), rep(2000, 4), rep(3000, 4)), 
+  event= c(1,   1,    rep(0, 5),    rep(0, 5),    rep(0, 4),    rep(0, 4)  ))
+
+r <- extrac_param(df)
+eta  <- r$eta
+beta <- r$beta
+
+# Exected Failure
+NowRiskRBA(df, eta, beta)
+
+```
+
+
+## Failure Forecast 
+# Example
+Failure forecasts can be made for any time interval. Let us use the next year as an example. Given the 18 pumps at risk in Table 4-1, the expected number of failures over the next 12 months can be predicted. Yearly usage of each pump will be 1000 hours. The failure forecast for one year sums the predicted failures of the 1000-hour pumps running to 2000 hours, plus the predicted failures of the 2000 hour pumps running to 3000 hours, plus the predicted failures of the 3000 hour pumps running to 4000 hours, etc. The forecast only involves the unfailed pumps, the living suspensions, pumps still "at risk". **All future failures will occur on today's survivors.**
+
+```{r example}
+df <- data.frame( 
+  time= c(2000, 3000, rep(1000, 5), rep(4000, 5), rep(2000, 4), rep(3000, 4)), 
+  event= c(1,   1,    rep(0, 5),    rep(0, 5),    rep(0, 4),    rep(0, 4)  ))
+
+# 12 month failure forecast
+FailuresFuture(u = 1000, df, eta, beta)
+```
+
+## Case 1 Study. Bearing fatigue
+# Get data
+```{r bearing cage data}
+df <- data.frame( 
+  time= c(230, 334, 423, 990, 1009, 1510), 
+  event= c(rep(1, 6) ) )
+
+number.units <- c(288,148,124,111,106,99,110,114,119,127,123,93,47,41,27,11,6,0,1,0,2)
+time.suspensions <- c(50,150,250,350,450,550,650,750,850,950,1050,1150,
+    1250,1350,1450,1550,1650,1750,1850,1950,2050)
+
+suspensions <- data.frame( 
+  time= rep(time.suspensions, number.units), 
+  event= rep(0, sum(number.units)) )
+
+df <- rbind(df, suspensions)
+# Checkings
+# str(df)
+
+```
+Lets check the weibull plot and the histogram of the suspensions
+
+```{r pre.fit}
+ggplot2::qplot(suspensions$time, bins=21)
+
+r <- extrac_param(df)
+eta  <- r$eta
+beta <- r$beta
+plot.abrem(r$abrem)
+```
+
+
+# 1.How many failures could be expected before the units reach 1000 hours if all the suspensions were new, zero time parts? 
+So we are removing the suspensions from the picture. Therefore is a probability of the PDF of the Weibull fit. 
+
+```{r}
+ft_fun <- function(t=t, eta = eta, beta = beta){
+    round(1 - exp(-( (t / eta) ^ beta) ), digits = 5) }
+
+# This is the probability of failures in the population at 1.000 hours
+ft_fun(t = 1000, eta, beta) 
+
+# Probability of failure of the population x pouplation = failures
+ft_fun(t = 1000, eta, beta) * nrow(df)
+```
+
+
+# 2. How many failures could be expected in the next year? How many in the next five years? (utilization is 300 hours/year)
+
+```{r}
+FailuresForecast(u= 300, df, eta, beta)
+FailuresForecast(u= 5 * 300, df, eta, beta)
+```
+
+
+# 3. How many failures could be expected over a 4000 hour period if we replace every bearing at 1000 hours? 2000 hours?
+```{r}
+4 * ft_fun(t = 1000, eta, beta)  * nrow(df)
+```
+
+# Bearing Cage Plot
+```{r}
+# 25 hours month
+usage <- 250
+cum.failure <- sapply(X= 1:60 * usage, FUN = FailuresForecast, df, eta, beta)
+months <- 1:60
+
+plot(months, cum.failure)
+```
+
+```{r}
+# 400 hours month
+usage <- 400
+cum.failure <- sapply(X= 1:60 * usage, FUN = FailuresForecast, df, eta, beta)
+months <- 1:60
+
+plot(months, cum.failure)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
