@@ -21,6 +21,7 @@ source("./R/module_UploadData.R")
 source("./R/module_WeibullCalculate.R")
 source("./R/module_Time_testing_complete.R")
 source("./R/module_Time_testing_partial.R")
+source("./R/module_Failure_forecast_generator.R")
 
 ### UI PART ----
 
@@ -39,6 +40,7 @@ sidebar <- function(){
                          menuSubItem("Time testing partial", icon = icon("gears"), tabName = "Ntesting", selected = F) 
                          ), 
                 menuItem("Forecast Modeler", icon = icon("line-chart"),
+                         menuSubItem("Model generator", icon = icon("gears"),tabName = "forecast_generator", selected = T),
                          menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
                          menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")
                          ), 
@@ -60,7 +62,8 @@ body <- function(){
       tabItem(tabName = "uploadData",     uploadData_UI("page_uploadData") ), 
       tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ), 
       tabItem(tabName = "ttesting",       zeroFailure_test_UI("page_ttest")),
-      tabItem(tabName = "Ntesting",       Zerofailure_fix_time_UI("page_Ntest"))
+      tabItem(tabName = "Ntesting",       Zerofailure_fix_time_UI("page_Ntest")), 
+      tabItem(tabName = "forecast_generator", FailureForecast_generator_UI("page_forecastGen"))
       )
     )
 }
@@ -133,6 +136,7 @@ server <- function(input, output, session){
                 callModule(weibullCalculate_server, "page_calculate", data)
                 callModule(zeroFailure_test_server, "page_ttest")
                 callModule(Zerofailure_fix_time_server, "page_Ntest")
+                callModule(FailureForecast_generator_server, "page_forecastGen")
 }
 
 ### Bind the app together ----

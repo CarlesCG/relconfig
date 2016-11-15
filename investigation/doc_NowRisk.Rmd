@@ -1,10 +1,16 @@
 ---
 title: "Section 4.2 Now Risk"
-subtitle: "Forecasting"
-author: "Carles C.G."
-output: html_document
+output: 
+  html_notebook:
+    highlight: tango
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+author: "RD"
+date: "14 Nov. 2016"
 ---
-
 
 ```{r libraries, message=FALSE, warning=FALSE}
 library(abrem)
@@ -17,8 +23,8 @@ df <- onefm
 
 
 
-## Now risk RBA
-# Get the eta beta
+# Now risk RBA
+## Get eta beta
 ```{r weibull}
 r <- extrac_param(df)
 eta  <- r$eta
@@ -29,11 +35,11 @@ NowRiskRBA(df, eta, beta)
 ```
 
 
-# Exercice 
+## Exercice 
 Example: Equation 4-2 will be used to calculate the expected failures now for a fleet of 20 pumps, one of which has failed at 2000 hours and another at 3000 hours. There are 5 suspensions at ages of 1000 and 4000 hours, and 4 at 2000 and 3000 hours, respectively. SSW software was used to generate the Weibull plot below from the data above where ~ = 2.63 and 11 = 6210 hours. The first question is, **"What is the expected
 number of failures from time zero to now for this population?"**
 
-```{r example}
+```{r example1}
 df <- data.frame( 
   time= c(2000, 3000, rep(1000, 5), rep(4000, 5), rep(2000, 4), rep(3000, 4)), 
   event= c(1,   1,    rep(0, 5),    rep(0, 5),    rep(0, 4),    rep(0, 4)  ))
@@ -48,21 +54,21 @@ NowRiskRBA(df, eta, beta)
 ```
 
 
-## Failure Forecast 
-# Example
+# Failure Forecast 
+## Example
 Failure forecasts can be made for any time interval. Let us use the next year as an example. Given the 18 pumps at risk in Table 4-1, the expected number of failures over the next 12 months can be predicted. Yearly usage of each pump will be 1000 hours. The failure forecast for one year sums the predicted failures of the 1000-hour pumps running to 2000 hours, plus the predicted failures of the 2000 hour pumps running to 3000 hours, plus the predicted failures of the 3000 hour pumps running to 4000 hours, etc. The forecast only involves the unfailed pumps, the living suspensions, pumps still "at risk". **All future failures will occur on today's survivors.**
 
-```{r example}
+```{r example2}
 df <- data.frame( 
   time= c(2000, 3000, rep(1000, 5), rep(4000, 5), rep(2000, 4), rep(3000, 4)), 
   event= c(1,   1,    rep(0, 5),    rep(0, 5),    rep(0, 4),    rep(0, 4)  ))
 
 # 12 month failure forecast
-FailuresFuture(u = 1000, df, eta, beta)
+FailuresForecast(u = 1000, df, eta, beta)
 ```
 
-## Case 1 Study. Bearing fatigue
-# Get data
+# Case 1 Study. Bearing fatigue
+## Data
 ```{r bearing cage data}
 df <- data.frame( 
   time= c(230, 334, 423, 990, 1009, 1510), 
@@ -93,7 +99,7 @@ plot.abrem(r$abrem)
 ```
 
 
-# 1.How many failures could be expected before the units reach 1000 hours if all the suspensions were new, zero time parts? 
+## How many failures could be expected before the units reach 1000 hours if all the suspensions were new, zero time parts? 
 So we are removing the suspensions from the picture. Therefore is a probability of the PDF of the Weibull fit. 
 
 ```{r}
@@ -108,7 +114,7 @@ ft_fun(t = 1000, eta, beta) * nrow(df)
 ```
 
 
-# 2. How many failures could be expected in the next year? How many in the next five years? (utilization is 300 hours/year)
+## How many failures could be expected in the next year? How many in the next five years? (utilization is 300 hours/year)
 
 ```{r}
 FailuresForecast(u= 300, df, eta, beta)
@@ -116,12 +122,12 @@ FailuresForecast(u= 5 * 300, df, eta, beta)
 ```
 
 
-# 3. How many failures could be expected over a 4000 hour period if we replace every bearing at 1000 hours? 2000 hours?
+## How many failures could be expected over a 4000 hour period if we replace every bearing at 1000 hours? 2000 hours?
 ```{r}
 4 * ft_fun(t = 1000, eta, beta)  * nrow(df)
 ```
 
-# Bearing Cage Plot
+## Bearing Cage Plot
 ```{r}
 # 25 hours month
 usage <- 250
@@ -139,6 +145,141 @@ months <- 1:60
 
 plot(months, cum.failure)
 ```
+
+# Case Study 2: Bleed System Failures
+## Data
+```{r}
+df <- data.frame( 
+  part_id= c("A", "B",  "C",   "A", "A","C", "C", "E", "F", rep("D", 10) ),  
+   time =  c(153, 872, 1568, 1428, 212, 808, 1405, 64, 32 , 
+             1198, 884, 1251, 1249, 708, 1082, 884, 1105, 828, 1013), 
+  event =  c(rep(1, 19) ) )
+
+number.units <- c(2, 2, 2, 9, 23, 27, 20, 22, 22, 11, 11, 20, 8, 4, 2, 3, 3, 1)
+time.suspensions <- c(250, 550, 650, 750, 850, 950, 1050, 1150, 1250, 
+                      1350, 1450, 1550, 1650, 1750, 1850, 1950, 2050, 2150)
+
+suspensions <- data.frame( 
+  part_id= rep("s", sum(number.units)), 
+  time= rep(time.suspensions, number.units), 
+  event= rep(0, sum(number.units)) )
+
+df <- rbind(df, suspensions)
+```
+
+First we will do a weibull of the whole fleet. Then we will decide if there is a good or a bad fit and decide if we need to split the data. 
+```{r bleed system}
+r <- extrac_param(df)
+# Graphically we will check the plot
+plot.abrem(r$abrem)
+```
+Looks like there is a big bend around the 700 Time to Failure. Let's cjeck the Now risk to see if the number of failures do not mach.
+```{r}
+NowRiskRBA(df, eta = r$eta, beta = r$beta)
+nrow( df %>% filter(event %in% 1) )
+```
+Do not match, but such a small difference (2 failures) is not conclusive. Therefore we will trust the graphic method. Let's separate the airbase D from the others and check the fit's.
+*Note*: There is an errata in the NWH book. The figure 4-5 does not correspond with the data. Beta and eta are slighly off. Same with with figure 4-6. 
+```{r}
+base.D <- extrac_param(df %>% filter(part_id %in% c('D', "s")) )
+base.others <- extrac_param(df %>% filter(!part_id %in% 'D'))
+plot.abrem(base.D$abrem)
+plot.abrem(base.others$abrem)
+
+```
+Chapter 7 presents methods to statistically show that they are significantly different. Root cause analysis showed the Base D failures were from salt water corrosion, as the runways were next to the ocean. Since the probability of failure excluding air base D, was acceptable up to 4000 hours (the life limit of the
+part), a failure forecast for air baseD was requested. The failure forecast questions are:
+
+## What is the expected number of incidents for the next 18 months with usage of 25 hours per month?
+
+```{r}
+FailuresForecast(u = 18*25,
+                 df = df %>% filter(part_id %in% c('D', "s")), 
+                 eta= base.D$eta, 
+                 beta= base.D$beta)
+
+
+## Forecast per month 
+# 25 hours month
+usage <- 25
+cum.failure <- sapply(X= 1:60 * usage, FUN = FailuresForecast, 
+                      df= df %>% filter(part_id %in% c('D', "s") ),
+                      eta=  base.D$eta, 
+                      beta= base.D$beta)
+cum.failure[18]
+months <- 1:60
+
+result <- data.frame(
+  Months = months, 
+  Risk = round(cum.failure, digits = 2) )
+
+## Plotting the resilt
+library(ggplot2)
+ggplot(result, aes(y = Risk, x=Months)) + 
+  geom_point(shape=2) + geom_line() + 
+  ylab("Failure Forecast") + xlab("Months")
+```
+
+
+```{r}
+# A data table
+DT::datatable(result, rownames = F, width = 500, filter = 'bottom', 
+              options = list(
+                columnDefs = list(list(className = 'dt-center', targets = '_all')) )
+)
+```
+## If the usage increases to 50 hours per month immediately, how many more failures can be expected? If the failed units are replaced as they fail what effect would the "renewals" have on the failure forecast?
+
+```{r}
+FailuresForecast(u = 18*50,
+                 df = df %>% filter(part_id %in% c('D', "s")), 
+                 eta= base.D$eta, 
+                      beta= base.D$beta)
+
+
+## Forecast per month 
+# 25 hours month
+usage <- 50
+cum.failure <- sapply(X= 1:60 * usage, FUN = FailuresForecast, 
+                      df= df %>% filter(part_id %in% c('D', "s") ),
+                      eta=  base.D$eta, 
+                      beta= base.D$beta)
+cum.failure[18]
+months <- 1:60
+
+result <- data.frame(
+  Months = months, 
+  Risk = round(cum.failure, digits = 2) )
+
+## Plotting the resilt
+library(ggplot2)
+ggplot(result, aes(y = Risk, x=Months)) + 
+  geom_point(shape=2) + geom_line() + 
+  ylab("Failure Forecast") + xlab("Months")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

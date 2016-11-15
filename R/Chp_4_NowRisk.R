@@ -94,7 +94,7 @@ FailuresForecast <- function(u, df, eta, beta){
   f_ti <- ft_fun(t=t_suspensions, eta, beta)
   
   futureRisk <- sum(   ( (f_ti_u - f_ti) / (1-f_ti) ))
-  return( round(futureRisk, digits = 2))
+  return( round(futureRisk, digits = 4))
 }
 
 #' Help function to test the code
