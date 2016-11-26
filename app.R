@@ -9,7 +9,7 @@ library(dplyr)
 library(ggplot2)
 
 options(shiny.maxRequestSize=30*1024^2)
-
+ggplot2::theme_set(theme_minimal())  
 
 
 # Source modules

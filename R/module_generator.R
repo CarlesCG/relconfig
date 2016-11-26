@@ -2,7 +2,6 @@
 library(abrem)
 
 generator_UI <- function(id){
-  
   ns <- NS(id)
   tagList(
     sidebarLayout(
