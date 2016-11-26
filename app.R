@@ -40,7 +40,7 @@ sidebar <- function(){
                          menuSubItem("Time testing partial", icon = icon("gears"), tabName = "Ntesting", selected = F) 
                          ), 
                 menuItem("Forecast Modeler", icon = icon("line-chart"),
-                         menuSubItem("Model generator", icon = icon("gears"),tabName = "forecast_generator", selected = T),
+                         menuSubItem("Model generator", icon = icon("gears"),tabName = "forecast_generator", selected = F),
                          menuSubItem("Train Models", icon = icon("gears"),tabName = "trainModels"),
                          menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")
                          ), 
