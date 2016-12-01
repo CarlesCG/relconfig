@@ -1,15 +1,27 @@
 # library(abernethy)
-library(abrem)
+suppressMessages(library(abrem))
+library(rintrojs)
+library(readxl)
 
 generator_UI <- function(id){
   ns <- NS(id)
   tagList(
+    # Tutorial intro.js
+    introjsUI(),
+    
+    # Text Introduction to the module
+    column(width = 12, id= ns("intro"),
+           box(title = "Introduction",   width = NULL, 
+               solidHeader = F, collapsible=T,  collapsed = T, 
+               includeMarkdown("./text/text_Failure_forecast_generator.md")) ), 
+    
+    # Outputs frm the MainPanel
     sidebarLayout(
       mainPanel(
-        
-        box(title = "Weibull plot generator", width = 12,# height = 820, 
+        box( # id=ns("test"), 
+          title = "Weibull plot generator", width = 12,# height = 820,
             status="info", solidHeader = T, collapsible=T,  
-            plotOutput( ns("logplot") ) ), 
+            plotOutput( ns("logplot") ) ),   
         valueBoxOutput(ns( "facts" ), width = 12), 
         box(title = "Countur plot", width = 12,
             status="info", solidHeader = T, collapsible=T,  
@@ -18,27 +30,33 @@ generator_UI <- function(id){
             status="info", solidHeader = T, collapsible=T,  
             dataTableOutput(ns("legendPlot")  ) ) 
       ), 
-      
+    
+    # Inputs from the sidebar   
       sidebarPanel(
+        id=ns("sidebar"), 
         # width = 2, 
         tabName="Variables", 
-        sliderInput( ns("npoints"),
-                     "Total sample", min = 4, max = 100 , value = 50, step=1), 
-        sliderInput( ns("nFailures"),
-                     "Number of failures", min = 3, max = 100, value = 21, step=1), 
-        sliderInput( ns("shape"),
-                     HTML("&beta;:","Shape / Slope of the failure mode"), 
-                     min = 0.1, max = 7, value = 3,  step = 0.1), 
-        sliderInput( ns("scale"),
-                     HTML("&eta;:", "Scale / Characteristic life"),  
-                     min = 10, max = 500, value = 100, step = 50), 
+        sliderInput( inputId = ns("npoints"), "Total sample", 
+                     min = 4, max = 100, value = 50, step=1)   %>% div(id=ns("tut_npoints")), 
+        sliderInput( inputId = ns("nFailures"), "Number of failures", 
+                     min = 3, max = 100, value = 21, step=1)   %>% div(id=ns("tut_nFailures")), 
+        sliderInput( ns("shape"), HTML("&beta;:","Shape / Slope of the failure mode"), 
+                     min = 0.1, max = 7, value = 3,  step = 0.1)   %>% div(id=ns("tut_beta")),  
+        sliderInput( ns("scale"), HTML("&eta;:", "Scale / Characteristic life"),  
+                     min = 10, max = 500, value = 100, step = 50)  %>% div(id=ns("tut_scale")),
         br(),
+        
         # Confident Intervals option
-        checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals?", value = F),
-        uiOutput( ns( "conditional_confinter"))
-        #
+        checkboxInput(inputId = ns("confinter"), label = "Plot confident intervals?", 
+                      value = F) %>% div(id=ns("tut_confinter")),
+        uiOutput( ns( "conditional_confinter")), 
+        
         # Download button
         # downloadButton( ns('download_weibullGenerator'), 'Download Plot')
+        
+        # Help button
+        actionButton(ns("help"), "Step-by-step guide")
+        
       ), fluid = T, position = "left" )
     
   )
@@ -46,7 +64,6 @@ generator_UI <- function(id){
 
 
 generator_Server <- function(input, output, session){
-  
   # 0. INPUT SLIDER CONDITIONS  -----------------------------
   # Number of failures > Num. points xa Update slider Input with correction
   observe({
@@ -63,7 +80,6 @@ generator_Server <- function(input, output, session){
                   "Level confidence Interval", min = 0.5,  max = 0.99, step= 0.05, value = 0.8)
     }
   })
-  
   
   ## 1. Plots --------------------------------------------
   # How the data will be generated
@@ -140,13 +156,13 @@ generator_Server <- function(input, output, session){
     
     # Select the icon 
     icon.fit <- ifelse(fit$gof$r2 >= fit$gof$ccc2, "thumbs-up", "thumbs-down")
+    subtitle.fit <- paste0("r^2 | CCC^2 = ", si(fit$gof$r2), " | ", si(fit$gof$ccc2),
+                           ifelse(fit$gof$r2 >= fit$gof$ccc2, " (good)", " (BAD)"))
+    # subtitle.fit <- "_"
     
     valueBox(
       value = ifelse(fit$gof$r2 >= fit$gof$ccc2, "Good fit", "Bad fit"), 
-      subtitle = paste0("r^2 | CCC^2 = ", 
-                        si(fit$gof$r2), " | ", si(fit$gof$ccc2), 
-                        ifelse(fit$gof$r2 >= fit$gof$ccc2, " (good)", 
-                               " (BAD)")), 
+      subtitle = subtitle.fit,
       icon =  icon(icon.fit, lib = "glyphicon"),
       color = ifelse(fit$gof$r2 >= fit$gof$ccc2, "green", "orange")
     )
@@ -211,8 +227,22 @@ generator_Server <- function(input, output, session){
     }
   })
   
+  ## 2. The help function
+  steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_generator")
   
+  # Initiate hints on startup with custom button and event
+  # hintjs(session, options = list("hintButtonLabel"="Hope this hint was helpful"),
+  #        events = list("onhintclose"='alert("Wasn\'t that hint helpful")'))
   
+  # start introjs when button is pressed with custom options and events
+  observeEvent(input$help,{
+               introjs(session, options = list(steps= steps,
+                                               "nextLabel"="Next",
+                                               "prevLabel"="Previous",
+                                               "skipLabel"="End"))
+    })
+  
+  ## 3. Download the plot ?
   # output$download_weibullGenerator <- downloadHandler(
   #   filename = "Plot_Weibull_generated.pdf",
   #   content = function(file) {
