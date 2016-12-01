@@ -16,6 +16,9 @@ ggplot2::theme_set(theme_minimal())
 # The code in ui.R is run once, when the Shiny app is started and it generates an HTML 
 # file which is cached and sent to each web browser that connects.
 # This is a candidate to go the global.R
+# Caveat: Since I'm using functions to create the UI, functions inside global.R
+# will not be available in that enviroment. Need to source
+source("./global.r")
 source("./R/module_generator.R")
 source("./R/module_UploadData.R")
 source("./R/module_WeibullCalculate.R")
@@ -55,6 +58,7 @@ sidebar <- function(){
 ### Body content --------------------------
 body <- function(){
   dashboardBody(
+    RdynamicsHeader(), 
     tabItems(
       ## Intro tab content ----
       tabItem(tabName = "intro",          includeMarkdown("./text/intro_text.md") ),
