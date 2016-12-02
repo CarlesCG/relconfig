@@ -18,7 +18,7 @@ ggplot2::theme_set(theme_minimal())
 # This is a candidate to go the global.R
 # Caveat: Since I'm using functions to create the UI, functions inside global.R
 # will not be available in that enviroment. Need to source
-source("./global.r")
+source("./global.R")
 source("./R/module_generator.R")
 source("./R/module_UploadData.R")
 source("./R/module_WeibullCalculate.R")
