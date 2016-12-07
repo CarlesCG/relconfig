@@ -13,7 +13,7 @@ generator_UI <- function(id){
     column(width = 12, id= ns("intro"),
            box(title = "Introduction",   width = NULL, 
                solidHeader = F, collapsible=T,  collapsed = T, 
-               includeMarkdown("./text/text_Failure_forecast_generator.md")) ), 
+               withMathJax ( includeMarkdown("./text/text_Failure_forecast_generator.md")) ) ) , 
     
     # Outputs frm the MainPanel
     sidebarLayout(
@@ -228,8 +228,8 @@ generator_Server <- function(input, output, session){
   })
   
   ## 2. The help function
-  steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_generator")
-  
+  # steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_generator")
+  steps <- read_rds("./text/tutorials/Tutoriales_introJS_dummy.rds")
   # Initiate hints on startup with custom button and event
   # hintjs(session, options = list("hintButtonLabel"="Hope this hint was helpful"),
   #        events = list("onhintclose"='alert("Wasn\'t that hint helpful")'))
