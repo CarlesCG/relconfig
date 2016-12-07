@@ -94,7 +94,7 @@ FailureForecast_generator_server <- function(input, output, session){
     set.seed(100)
     d <- diamonds[sample(nrow(diamonds), 1000), ]
     plot_ly(d, x = ~carat, y = ~price, color = ~carat,
-            size = ~carat, text = ~paste("Clarity: ", clarity))
+            size = ~carat, text = ~paste("Clarity: ", clarity)) %>% config(displayModeBar=F, displaylogo=F)
     
     # forecast_data()
     # input$usage
