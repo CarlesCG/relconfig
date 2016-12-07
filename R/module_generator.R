@@ -17,15 +17,15 @@ generator_UI <- function(id){
     
     # Outputs frm the MainPanel
     sidebarLayout(
-      mainPanel(
+      mainPanel( id=ns("mainPanel"), 
         box( # id=ns("test"), 
           title = "Weibull plot generator", width = 12,# height = 820,
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("logplot") ) ),   
         valueBoxOutput(ns( "facts" ), width = 12), 
-        box(title = "Countur plot", width = 12,
+        box(title = "Countour plot", width = 12,
             status="info", solidHeader = T, collapsible=T,  
-            plotOutput(ns("countour_plot")  ) ), 
+            plotOutput(ns("contour_plot")  ) ), 
         box(title = "Technicall info", 
             status="info", solidHeader = T, collapsible=T,  
             dataTableOutput(ns("legendPlot")  ) ) 
@@ -228,8 +228,9 @@ generator_Server <- function(input, output, session){
   })
   
   ## 2. The help function
-  # steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_generator")
-  steps <- read_rds("./text/tutorials/Tutoriales_introJS_dummy.rds")
+  steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_generator")
+  # steps <- read_rds("./text/tutorials/Tutoriales_introJS_dummy.rds")
+  
   # Initiate hints on startup with custom button and event
   # hintjs(session, options = list("hintButtonLabel"="Hope this hint was helpful"),
   #        events = list("onhintclose"='alert("Wasn\'t that hint helpful")'))
