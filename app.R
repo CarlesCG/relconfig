@@ -48,7 +48,7 @@ sidebar <- function(){
                          menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")
                          ), 
                 menuItem("Help", tabName = "help", icon = icon("question-circle"),
-                         menuSubItem("About shinyHome", icon = icon("user"),tabName = "helpAbout"),
+                         menuSubItem("About", icon = icon("user"),tabName = "helpAbout"),
                          menuSubItem("Welcome", icon = icon("coffee"),tabName = "helpWelcome") 
                          )
     )
