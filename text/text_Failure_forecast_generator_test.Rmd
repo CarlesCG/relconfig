@@ -8,17 +8,12 @@ The horizontal scale is a measure of life or aging. Start/stop cycles, mileage, 
   + The slope of the line, beta, is particularly significant and may provide a clue to the physics of the failure. 
   + The characteristic life, eta , is the typical time to failure in Weibull analysis. It is related to the mean time to failure.
 
-# Cases  
 The following are examples of engineering problems solved with Weibull analysis:
   + A project engineer reports three failures of a component in service operations during a three-month period. The Program Manager asks, "How many failures will we have in the next quarter, six months, and year?" What will it cost? What is the best corrective action to reduce the risk and losses?  
-  <br>
-  + To order spare parts and schedule maintenance labor, how many units will be returned to depot for overhaul for each failure mode month-by-month next year? The program manager wants to be 95% confident that he will have enough spare parts and labor available to support the overall program. A state Air Resources Board requires a fleet recall when any part in the emissions system exceeds a 4% failure rate during the warranty period. Based on the warranty data, which parts will exceed the 4% rate and on what date?  
-  <br>
-  + After an engineering change, how many units must be tested for how long, without any failures, to verify that the old failure mode is eliminated, or significantly improved with 90% confidence?  
-  <br>
+  + To order spare parts and schedule maintenance labor, how many units will be returned to depot for overhaul for each failure mode month-by-month next year? The program manager wants to be 95% confident that he will have enough spare parts and labor available to support the overall program. A state Air Resources Board requires a fleet recall when any part in the emissions system exceeds a 4% failure rate during the warranty period. Based on the warranty data, which parts will exceed
+the 4% rate and on what date?   
+  + After an engineering change, how many units must be tested for how long, without any failures, to verify that the old failure mode is eliminated, or significantly improved with 90% confidence?   
   + An electric utility is plagued with outages from superheater tube failures. Based on inspection data forecast the life of the boiler based on plugging failed tubes. The boiler is replaced when 10% of the tubes have been plugged due to failure.  
-  <br>
   + The cost of an unplanned failure for a component, subject to a wear out failure mode, is twenty times the cost of a planned replacement. What is the optimal replacement interval?  
-
-
-
+  
+  
