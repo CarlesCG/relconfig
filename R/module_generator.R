@@ -25,10 +25,10 @@ generator_UI <- function(id){
         valueBoxOutput(ns( "facts" ), width = 12), 
         box(title = "Countour plot", width = 12,
             status="info", solidHeader = T, collapsible=T,  
-            plotOutput(ns("contour_plot")  ) ), 
-        box(title = "Technicall info", 
-            status="info", solidHeader = T, collapsible=T,  
-            dataTableOutput(ns("legendPlot")  ) ) 
+            plotOutput(ns("contour_plot")  ) ) #, 
+        # box(title = "Technicall info", 
+        #     status="info", solidHeader = T, collapsible=T,  
+        #     dataTableOutput(ns("legendPlot")  ) ) 
       ), 
     
     # Inputs from the sidebar   
@@ -180,7 +180,7 @@ generator_Server <- function(input, output, session){
     #   )
   })
   
-  output$countour_plot <- renderPlot({
+  output$contour_plot <- renderPlot({
     # If there is confident intervals plot the contour plot
     # otherwise just a plot with a dot
     
@@ -228,8 +228,9 @@ generator_Server <- function(input, output, session){
   })
   
   ## 2. The help function
-  steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_generator")
-  # steps <- read_rds("./text/tutorials/Tutoriales_introJS_dummy.rds")
+  
+  steps <- readxl::read_excel(path = "./text/tutorials/Tutoriales_introJS.xlsx", 
+                              sheet = "page_generator")
   
   # Initiate hints on startup with custom button and event
   # hintjs(session, options = list("hintButtonLabel"="Hope this hint was helpful"),
