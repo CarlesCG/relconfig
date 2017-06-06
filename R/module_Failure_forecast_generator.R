@@ -4,60 +4,6 @@ source("./R/Chp_4_NowRisk.R")
 
 FailureForecast_generator_UI <- function(id){
   ns <- NS(id)
-  tagList(
-   
-     column(width = 12,
-      box(title = "Introduction",   width = NULL, 
-          solidHeader = F, collapsible=T,  collapsed = T, 
-          includeMarkdown("./text/text_Failure_forecast_generator.md"))
-      ), 
-    sidebarLayout(position = "right",
-      sidebarPanel(
-        numericInput(inputId = ns("beta"), 
-                     label   = HTML("&beta;:","Beta of the failure mode"),
-                     value   = 1 ) ,
-        numericInput(inputId = ns("eta"),
-                     label =  HTML("&eta;:", "Characteristic life"), 
-                     value = 500),
-        numericInput(inputId = ns("usage"),
-                     label =  HTML("&alpha;:", "Use per unit of time/cicle"), 
-                     value = 25),
-        numericInput(inputId = ns("cicles"),
-                     label =  "Number of cicles or units of time", 
-                     value = 60),
-        
-        sliderInput( inputId = ns("number.suspensions") ,
-                     label = "Number of suspensions", 
-                     min = 1, max = 100, value = 1, 
-                     animate = T),
-        sliderInput( inputId = ns("time.suspension") ,
-                     label = "Time of the suspensions", 
-                     min = 1, max = 10000, value = 50, 
-                     animate = T)
-      ),
-      mainPanel(
-        box(title = "Failure forecast ", width = 12,# height = 820, 
-            status="info", solidHeader = T, collapsible=T,  
-            plotlyOutput( ns("failure_forecast_plot") ) , 
-            footer = "How many failure is possible to expect? (no replacement)"), 
-        
-        box(title = "Failure at time/cicle", width = 6,# height = 820, 
-            status="info", solidHeader = T, collapsible=F,  
-            verbatimTextOutput( ( ns('failure_forecast_timed')) ) ), 
-        
-        box(title = "Download report", 
-            solidHeader = T, collapsible = T, collapsed = T,  background = "blue",
-            radioButtons(ns('format'), label = '',choices =  c('PDF', 'HTML', 'Word'),
-                         inline = TRUE),
-            downloadButton(ns('downloadReport') ) ), 
-        
-        box(title = "Table of failures", width = 8,# height = 820, 
-            status="info", solidHeader = T, collapsible=F,  
-            dataTableOutput( ( ns('failure_forecast_table'))) ) 
-        
-        )
-      )
-    )
   
 }
 
@@ -146,25 +92,3 @@ FailureForecast_generator_server <- function(input, output, session){
     } )
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
