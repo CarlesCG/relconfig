@@ -1,4 +1,7 @@
-# Reliability App
+# Life Data Analysis & Reliability App
+
+![](http://reliabledynamics.com/wp-content/uploads/2017/01/Reliable_Dynamics102logo.png)
+
 The reliability analysis app contains the basic tools for an introduction to the [life data analysis](http://www.weibull.com/basics/lifedata.htm) field.  Among others, reliability analysis is useful to statistically infer the Time-To-Failure of mechanical components.  
   
 The aim is this app is to educate, inform, as well as, give analysis capabilities in order to inspire the user. The aim is to motivate the user to invest time and have a *deep divee* into the world of reliability analysis. For simplification and information purposes the topic *'Weibull analysis' and 'Life data'* has been chosen. This topic was covered by Dr. Abernethy in his book  "The New Weibull Handbook". 
@@ -31,13 +34,17 @@ By default there is an full functional example with two failure modes load in th
  -- Confidence interval level  
  -- Method to fit the points: here is possible to choose between 3 methods.  
  -- Method to calculate the confidence intervals.  
- 
- - **Failure testing**
+<br><br>
+  
+- **Zero Failure Testing**
     + Time testing complete
     For Zero test complete test to failure, how much time do I need to test a component to demostrate certain reliability level? Given the failure mode, the life to demonstrate, number of components available will output the amount of time that is needed to test those components wirth zero failure.
     + Time testing partial
     In case that the Zero test can not be completed, what is the level of reliability achievied?  
-    
+
+
+
+## Coming soon    
 - **Forecast Modeler**
     + Model generator
     + Train models
