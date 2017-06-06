@@ -73,11 +73,11 @@ body <- function(){
 }
 
 header <- function(){
-  dashboardHeader(title = "R dashboard", 
+  dashboardHeader(title = "Life Data Analysis", 
                   dropdownMenu(type = "messages",
                                messageItem(
                                  from = "Sales Dept",
-                                 message = "Sales are steady this month."),
+                                 message = " "),
                                messageItem(
                                  from = "New User",
                                  message = "How do I register?",
@@ -87,7 +87,7 @@ header <- function(){
                                  from = "Support",
                                  message = "The new server is ready.",
                                  icon = icon("life-ring"),
-                                 time = "2014-12-01")
+                                 time = "2017-05-14")
                   ), 
                   dropdownMenu(type = "notifications",
                                notificationItem(
@@ -100,9 +100,9 @@ header <- function(){
                                  status = "success"
                                ),
                                notificationItem(
-                                 text = "Server load at 86%",
+                                 text = "Server load at 16%",
                                  icon = icon("exclamation-triangle"),
-                                 status = "warning"
+                                 status = "success"
                                )
                   ), 
                   dropdownMenu(type = "tasks", badgeStatus = "success",
