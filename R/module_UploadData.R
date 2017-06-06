@@ -9,7 +9,7 @@ uploadData_UI <- function(id){
     # Panel with the data uploaded
     sidebarLayout(
       mainPanel(
-        box(title = "Data Uploaded", width = 12,# height = 820, 
+        box(title = "Data", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             dataTableOutput(ns("test") ) )
       ),
