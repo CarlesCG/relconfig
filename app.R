@@ -67,7 +67,8 @@ body <- function(){
       tabItem(tabName = "calculateModel", weibullCalculate_UI("page_calculate") ), 
       tabItem(tabName = "ttesting",       zeroFailure_test_UI("page_ttest")),
       tabItem(tabName = "Ntesting",       Zerofailure_fix_time_UI("page_Ntest")), 
-      tabItem(tabName = "forecast_generator", FailureForecast_generator_UI("page_forecastGen"))
+      tabItem(tabName = "forecast_generator", FailureForecast_generator_UI("page_forecastGen")), 
+      tabItem(tabName = "helpAbout",           includeMarkdown("./text/text_comingSoon.md"))
       )
     )
 }

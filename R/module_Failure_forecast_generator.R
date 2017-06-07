@@ -3,7 +3,7 @@ library(plotly)
 source("./R/Chp_4_NowRisk.R")
 
 FailureForecast_generator_UI <- function(id){
-  ns <- NS(id)
+  includeMarkdown("./text/text_comingSoon.md")
   
 }
 
