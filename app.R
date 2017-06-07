@@ -58,6 +58,9 @@ sidebar <- function(){
 ### Body content --------------------------
 body <- function(){
   dashboardBody(
+    # gAnalytics
+     tags$head(includeScript("gAnalytics.js")),
+    # Special header
     RdynamicsHeader(), 
     tabItems(
       ## Intro tab content ----
