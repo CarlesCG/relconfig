@@ -128,6 +128,7 @@ header <- function(){
 
 ## Bind ui together ----
 ui <- dashboardPage(
+  skin = "black", 
   header(),
   sidebar(),
   body())
