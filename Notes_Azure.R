@@ -1,3 +1,11 @@
-install.packages("dplyr", repos = "http://cran.us.r-project.org")
+options(repos = c(CRAN = "https://mran.revolutionanalytics.com/snapshot/2016-11-02"))
+options(repos = c(CRAN = "https://cran.revolutionanalytics.com"))
+
+install.packages("readxl", repos = "http://cran.us.r-project.org")
 devtools::install_github("rstudio/rmarkdown")
 install.packages("rprojroot", repos = "http://cran.us.r-project.org")
+install.packages("rmarkdown", repos = "http://cran.us.r-project.org")
+install.packages("rstudioapi", repos = "http://cran.us.r-project.org")
+install.packages("packrat", repos = "http://cran.us.r-project.org")
+install.packages("miniUI", repos = "http://cran.us.r-project.org")
+devtools::install_github("rstudio/addinexamples", type = "source")
