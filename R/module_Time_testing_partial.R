@@ -18,22 +18,22 @@ Zerofailure_fix_time_UI <- function(id){
                      value   = 1 ) ,
         numericInput(inputId = ns("dem_eta"),
                      label =  HTML("&eta;:", "Characteristic life to demonstrate"), 
-                     value = 500),
+                     value = 5000),
         numericInput(inputId = ns("test_eta"),
                      label =  HTML("&eta;:", "Time available to test"), 
                      value = 300),
         sliderInput( inputId = ns("confi") ,
                      label = "Confidence", 
-                     min = .7, max = .99, value = .1, 
+                     min = .7, max = .99, value = .85, 
                      animate = T)
       ),
       mainPanel(
-        box(title = "___ ", width = 12,# height = 820, 
+        box(title = "Partial Testing Curves", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotlyOutput( ns("fix_time_plot") ) , 
-            footer = "How much time will it be necessary to pass the test? (for
-            different number of components in the test and different levels of 
-            confidence)"), 
+            footer = "Number components to test against confidence level, depending on the time available. 
+                      In general, the less time to test the more components are 
+                      necessary"), 
         box(title = "Zero failure test", width = 6,# height = 820, 
             status="info", solidHeader = T, collapsible=F,  
             verbatimTextOutput( ns( "fix_time_result") ), 
@@ -68,8 +68,14 @@ Zerofailure_fix_time_server <- function(input, output, session){
   
   # text.for.footer <- 
   output$fix_time_footer <- renderText({
-    paste0(    
-      "Number of components needed to test without failure to show that the failure mode was either eleminated or significantly improved (with a ",
+    paste0(
+       
+      "Given the time available for the test ( ", 
+      input$test_eta, 
+      " units), ", 
+      fix.time.calculation(),
+      " is the number of components needed to test without failure ", 
+      "to show that the failure mode was either eleminated or significantly improved (with ",
       input$confi*100,
       " % confidence)."
     )
@@ -78,7 +84,7 @@ Zerofailure_fix_time_server <- function(input, output, session){
   data.forPlot <- reactive({
   # seq(.01, .1,by = .01)
   df <- expand.grid(
-    test_eta= c( seq(.2, 1, by = .1) )  * input$dem_eta, 
+    test_eta= c( seq(.4, 1, by = .1) )  * input$test_eta, 
     beta = input$beta, 
     dem_eta = input$dem_eta,
     conf=  seq(0.7, .99, by=.01) )
@@ -99,12 +105,13 @@ Zerofailure_fix_time_server <- function(input, output, session){
                 aes(x=components.needed, y=conf, 
                     group= test_eta, col= as.factor( test_eta))) +
       geom_line() + 
-      geom_hline(aes(yintercept= input$confi)) +
+      geom_hline(aes(yintercept= input$confi)) + 
+      scale_color_discrete("Time available") +
       ylab("Confidence") + xlab("Number of components to test") + 
-      ggtitle(paste0("Total of ","______", " testing components")) + 
+    # ggtitle(paste0("Testing Curves")) + 
       theme_minimal()
     
-    ggplotly(p)
+    ggplotly(p) %>% config(displayModeBar=FALSE) 
   })
   
   output$downloadReport <- downloadHandler(

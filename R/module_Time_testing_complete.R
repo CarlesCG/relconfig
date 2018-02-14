@@ -24,12 +24,12 @@ zeroFailure_test_UI <- function(id){
                      value = 500),
         sliderInput( inputId = ns("confi") ,
                      label = "Confidence", 
-                     min = .6, max = .99, value = .1, 
+                     min = .6, max = .99, value = .85, 
                      animate = T)
         
       ),
       mainPanel(
-        box(title = "Failure test plot", width = 12,# height = 820, 
+        box(title = "Failure Testing Curves", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotlyOutput( ns("fixComponents_plot") ) , 
             footer = "How much time will it be necessary to pass the test? (for
@@ -99,7 +99,7 @@ zeroFailure_test_server <- function(input, output, session){
       theme_minimal()
     
     
-    ggplotly(p)
+    ggplotly(p) # %>% config(displayModeBar=FALSE) 
   })
   
   # output$fixComponents_plot<- renderPlotly({
