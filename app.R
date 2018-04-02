@@ -48,8 +48,7 @@ sidebar <- function(){
                          menuSubItem("Compare Models", icon = icon("check-circle"), tabName = "compareModels")
                          ), 
                 menuItem("Help", tabName = "help", icon = icon("question-circle"),
-                         menuSubItem("About", icon = icon("user"),tabName = "helpAbout"),
-                         menuSubItem("Welcome", icon = icon("coffee"),tabName = "helpWelcome") 
+                         menuSubItem("About", icon = icon("user"),tabName = "helpAbout")
                          )
     )
   )
@@ -61,7 +60,7 @@ body <- function(){
     # gAnalytics
      tags$head(includeScript("gAnalytics.js")),
     # Special header
-    RdynamicsHeader(), 
+    # RdynamicsHeader(), 
     tabItems(
       ## Intro tab content ----
       tabItem(tabName = "intro",          includeMarkdown("./text/intro_text.md") ),
@@ -77,52 +76,52 @@ body <- function(){
 }
 
 header <- function(){
-  dashboardHeader(title = "Life Data Analysis", 
-                  dropdownMenu(type = "messages",
-                               messageItem(
-                                 from = "Sales Dept",
-                                 message = " "),
-                               messageItem(
-                                 from = "New User",
-                                 message = "How do I register?",
-                                 icon = icon("question"),
-                                 time = "13:45"),
-                               messageItem(
-                                 from = "Support",
-                                 message = "The new server is ready.",
-                                 icon = icon("life-ring"),
-                                 time = "2017-05-14")
-                  ), 
-                  dropdownMenu(type = "notifications",
-                               notificationItem(
-                                 text = "5 new users today",
-                                 icon("users")
-                               ),
-                               notificationItem(
-                                 text = "12 items delivered",
-                                 icon("truck"),
-                                 status = "success"
-                               ),
-                               notificationItem(
-                                 text = "Server load at 16%",
-                                 icon = icon("exclamation-triangle"),
-                                 status = "success"
-                               )
-                  ), 
-                  dropdownMenu(type = "tasks", badgeStatus = "success",
-                               taskItem(value = 90, color = "green",
-                                        "Documentation"
-                               ),
-                               taskItem(value = 17, color = "aqua",
-                                        "Project X"
-                               ),
-                               taskItem(value = 75, color = "yellow",
-                                        "Server deployment"
-                               ),
-                               taskItem(value = 80, color = "red",
-                                        "Overall project"
-                               )
-                  )
+  dashboardHeader(title = "Life Data Analysis" # , 
+                  # dropdownMenu(type = "messages",
+                  #              messageItem(
+                  #                from = "Sales Dept",
+                  #                message = " "),
+                  #              messageItem(
+                  #                from = "New User",
+                  #                message = "How do I register?",
+                  #                icon = icon("question"),
+                  #                time = "13:45"),
+                  #              messageItem(
+                  #                from = "Support",
+                  #                message = "The new server is ready.",
+                  #                icon = icon("life-ring"),
+                  #                time = "2017-05-14")
+                  # ), 
+                  # dropdownMenu(type = "notifications",
+                  #              notificationItem(
+                  #                text = "5 new users today",
+                  #                icon("users")
+                  #              ),
+                  #              notificationItem(
+                  #                text = "12 items delivered",
+                  #                icon("truck"),
+                  #                status = "success"
+                  #              ),
+                  #              notificationItem(
+                  #                text = "Server load at 16%",
+                  #                icon = icon("exclamation-triangle"),
+                  #                status = "success"
+                  #              )
+                  # ), 
+                  # dropdownMenu(type = "tasks", badgeStatus = "success",
+                  #              taskItem(value = 90, color = "green",
+                  #                       "Documentation"
+                  #              ),
+                  #              taskItem(value = 17, color = "aqua",
+                  #                       "Project X"
+                  #              ),
+                  #              taskItem(value = 75, color = "yellow",
+                  #                       "Server deployment"
+                  #              ),
+                  #              taskItem(value = 80, color = "red",
+                  #                       "Overall project"
+                  #              )
+                  # )
   )
 }
 
