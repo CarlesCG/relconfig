@@ -3,9 +3,14 @@
 
 The reliability analysis app contains the basic tools for an introduction to the [life data analysis](http://www.weibull.com/basics/lifedata.htm) field.  Among others, reliability analysis is useful to statistically infer the Time-To-Failure of mechanical components.  
   
-The aim is this app is to educate, inform, as well as, give analysis capabilities in order to inspire the user. The aim is to motivate the user to invest time and have a *deep divee* into the world of reliability analysis. For simplification and information purposes the topic *'Weibull analysis' and 'Life data'* has been chosen. This topic was covered by Dr. Abernethy in his book  "The New Weibull Handbook". 
+The aim is this app is to educate, inform, as well as, give analysis capabilities in order to inspire the user. The aim is to motivate the user to invest time and have a *deep dive* into the world of reliability analysis. For simplification and information purposes the topic *'Weibull analysis' and 'Life data'* has been chosen. This topic was covered by Dr. Abernethy in his book  "The New Weibull Handbook". 
 
-[![](https://www.blog.google/static/blog/images/google-200x200.7714256da16f.png)](http://www.reliabledynamics.com)
+<p align="center">
+<a target="_blank" href="https://www.reliabledynamics.com"> 
+<img src="../www/logo.png") width="300px" >
+</a>
+</p>
+
 
 Features: 
 --------

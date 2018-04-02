@@ -1,5 +1,8 @@
-# Cooming soon! 
-Visit [RealibleDynamics.com](http://www.reliabledynamics.com)  
+# More Coming Soon! 
+Visit <a href="https://www.reliabledynamics.com" target="_blank">RealibleDynamics.com </a> if you’d like an early free trial!  
   
-[![](https://www.blog.google/static/blog/images/google-200x200.7714256da16f.png)](http://www.reliabledynamics.com)
-
+<p align="center">
+<a target="_blank" href="https://www.reliabledynamics.com"> 
+<img src="../www/logo.png") width="300px" >
+</a>
+</p>
