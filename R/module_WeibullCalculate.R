@@ -20,12 +20,12 @@ weibullCalculate_UI <- function(id){
     tags$style(type="text/css", css),
     sidebarLayout(
       mainPanel(
-        box(title = "Weibull plot generator", width = 12,# height = 820, 
+        box(title = "Weibull Curve(s)", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("abremplot") ) ), 
-        box(title = "Weibull summary", width = 12,# height = 820, 
-            status="info", solidHeader = T, collapsible=T,  
-            verbatimTextOutput( ns("test") ) ), 
+        # box(title = "Weibull summary", width = 12,# height = 820, 
+        #     status="info", solidHeader = T, collapsible=T,  
+        #     verbatimTextOutput( ns("test") ) ), 
         box(title = "Events Density ", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("ggdensity") ) )
@@ -91,7 +91,7 @@ weibullCalculate_server <- function(input, output, session, data){
                 conf.method = input$method.conf, 
                 conf.level = input$conflevel.generator,
                 is.plot.legend = input$print.legend, 
-                title = "This is my plot" )
+                title = "" )
   })
   
   output$ggdensity <- renderPlot({
