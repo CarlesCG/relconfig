@@ -99,7 +99,7 @@ zeroFailure_test_server <- function(input, output, session){
       theme_minimal()
     
     
-    ggplotly(p) # %>% config(displayModeBar=FALSE) 
+    ggplotly(p) %>% config(displayModeBar=FALSE) 
   })
   
   # output$fixComponents_plot<- renderPlotly({
