@@ -11,7 +11,8 @@ uploadData_UI <- function(id){
       mainPanel(
         box(title = "Data", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
-            dataTableOutput(ns("test") ) )
+            dataTableOutput(ns("test") ) ) %>% 
+          div(id = ns("data_table"))
       ),
       
       # Options to upload the data
@@ -94,7 +95,7 @@ uploadData_server <- function(input, output, session){
   )
   
   ## 2. The help function
-  steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xls", sheet = "page_uploadData")
+  steps <- readxl::read_excel("./text/tutorials/Tutoriales_introJS.xlsx", sheet = "page_uploadData")
   
   # start introjs when button is pressed with custom options and events
   observeEvent(input$help,{
