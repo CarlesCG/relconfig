@@ -106,7 +106,7 @@ Zerofailure_fix_time_server <- function(input, output, session){
                     group= test_eta, col= as.factor( test_eta))) +
       geom_line() + 
       geom_hline(aes(yintercept= input$confi)) + 
-      scale_color_discrete("Time available") +
+      scale_color_discrete("Time") +
       ylab("Confidence") + xlab("Number of components to test") + 
     # ggtitle(paste0("Testing Curves")) + 
       theme_minimal()
