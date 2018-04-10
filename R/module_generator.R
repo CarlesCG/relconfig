@@ -22,6 +22,8 @@ generator_UI <- function(id){
           title = "Weibull plot generator", width = 12,# height = 820,
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("logplot") ) ),   
+        valueBoxOutput(ns("beta"), width = 6), 
+        valueBoxOutput(ns("eta"), width = 6), 
         valueBoxOutput(ns( "facts" ), width = 12), 
         box(title = "Countour plot", width = 12,
             status="info", solidHeader = T, collapsible=T,  
@@ -145,6 +147,27 @@ generator_Server <- function(input, output, session){
     
   }, options= list(paging = F, searching = FALSE) )
   
+  output$beta <- renderValueBox(({
+    # Shorten the variable name
+    # browser()
+    beta <- weibull.generator()$fit[[1]][["beta"]]
+    beta <- signif(beta, 3)
+    valueBox(
+      value =  beta, 
+      subtitle = HTML("&beta;:","Shape / Slope of the failure mode"), 
+      icon = icon("calculator")
+      )
+  }))
+  output$eta <- renderValueBox(({
+    # Shorten the variable name
+    # browser()
+    eta <- weibull.generator()$fit[[1]][["eta"]]
+    eta <- signif(eta, 4 )
+    valueBox(
+      value =  eta, 
+      subtitle = HTML("&eta;:", "Scale / Characteristic life"), 
+      icon = icon("calculator"))
+  }))
   output$facts <- renderValueBox({
     
     # Shorten the variable name
