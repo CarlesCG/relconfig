@@ -23,6 +23,10 @@ weibullCalculate_UI <- function(id){
         box(title = "Weibull Curve(s)", width = 12,# height = 820, 
             status="info", solidHeader = T, collapsible=T,  
             plotOutput( ns("abremplot") ) ), 
+        valueBoxOutput(ns( "param_fits" ), width = 12), 
+        
+        # div(id = ns('placeholder')), 
+        
         # box(title = "Weibull summary", width = 12,# height = 820, 
         #     status="info", solidHeader = T, collapsible=T,  
         #     verbatimTextOutput( ns("test") ) ), 
@@ -77,16 +81,31 @@ weibullCalculate_server <- function(input, output, session, data){
     }
   })
   
-  output$abremplot <- renderPlot({
+  abrem.list.calculated <- reactive({
     # Make my abrem
     abrem.list <- make_several_abrems(df= data(), 
-                               fit.selector= input$fit.selector,
-                               conf.intervals= input$confinter, 
-                               conf.method= input$method.conf, 
-                               conf.level= input$conflevel.generator)
+                                      fit.selector= input$fit.selector,
+                                      conf.intervals= input$confinter, 
+                                      conf.method= input$method.conf, 
+                                      conf.level= input$conflevel.generator)
+    return(abrem.list)
+  })
+  
+  output$abremplot <- renderPlot({
+    # Note: this can be done in a reactive outside this foo
+    # so we only need to calculate the abrems once and 
+    # share them. 
     
+    ## Make my abrem
+    # abrem.list <- make_several_abrems(df= data(), 
+    #                            fit.selector= input$fit.selector,
+    #                            conf.intervals= input$confinter, 
+    #                            conf.method= input$method.conf, 
+    #                            conf.level= input$conflevel.generator)
+    # 
+    # browser()
     # Plot my abrem object
-    plot_abrem( dfa = abrem.list, 
+    plot_abrem( dfa = abrem.list.calculated(), 
                 conf.intervals = input$confinter, 
                 conf.method = input$method.conf, 
                 conf.level = input$conflevel.generator,
@@ -111,6 +130,30 @@ weibullCalculate_server <- function(input, output, session, data){
       theme_bw() +
       ggtitle("Where did the events take place?")
   })
+  
+  output$param_fits <- renderValueBox({
+    lenght.abrem <- length(abrem.list.calculated())
+    values.box <- paste0( "Weibull fits calculated: ",  lenght.abrem )
+    valueBox(
+      value = values.box ,
+      subtitle = "subtitle fit",
+      icon =  icon("thumbs-up", lib = "glyphicon"),
+      color = "green")
+  })
+  
+  # observe({
+  #   # browser()
+  #   # Donde ponemos el # en el div??? 
+  #   # id <- length(abrem.list.calculated())
+  #   id <- 2
+  #   insertUI('#page_calculate-placeholder',
+  #            ui = plotOutput(id))
+  # 
+  #   output[[id]] <- renderPlot({
+  #     plot(isolate(id) )
+  #          })
+  # 
+  # })
   
   
   # df <- callModule(uploadData_server, "page_uploadData2")
