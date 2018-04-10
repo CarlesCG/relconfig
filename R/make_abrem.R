@@ -26,6 +26,8 @@ make_abrem <- function(df,
   
   # Work around due to the impossibility to render concatenated strings i.e. c('rr', 'xony')
   # to HTMLwithout getting escaped!
+  message("Method fitting the data...")
+  
   if(fit.selector %in% "RRxony"){
     dfa <- abrem.fit(dfa, col="blue", method.fit=c('rr', 'xony'))
   }else{
@@ -35,13 +37,16 @@ make_abrem <- function(df,
   
   ### 3. Add confidence intervals
   if(conf.intervals == T){
+    message("Adding confident intervals...")
+    
     dfa <- abrem.conf(dfa, 
                       method.conf.blives= conf.method, 
                       cl=                 conf.level, 
-                      unrel.n=25, 
+                      unrel.n= 25, 
                       lty=2, lwd=2, col="orange")
   }
   
+  message("Done with calculation")
   return(dfa)
 }
 
