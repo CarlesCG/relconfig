@@ -33,10 +33,10 @@ sidebar <- function(){
   dashboardSidebar(
     sidebarMenu(id="menu1",
                 menuItem("Intro", tabName = "intro", icon = icon("info"),                                         selected = F), 
-                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"),                    selected = T), 
+                menuItem("Weibull generator", tabName = "generator", icon = icon("dashboard"),                    selected = F), 
                 menuItem("Weibull Modeler", tabName = "modeler", icon = icon("bar-chart"),                        selected = F, 
                           menuSubItem("Upload data", icon = icon("gears"),tabName = "uploadData",                 selected = F),
-                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel",       selected = F) 
+                          menuSubItem("Calculate", icon = icon("check-circle"), tabName = "calculateModel",       selected = T) 
                          ), 
                 menuItem("Zero Failure testing", tabName = "Ztest", icon = icon("flash", lib='glyphicon'),             selected = F, 
                          menuSubItem("Time testing complete", icon = icon("time", lib = "glyphicon"),tabName = "ttesting" ),
